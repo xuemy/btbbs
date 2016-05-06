@@ -1,0 +1,88 @@
+
+@import "less/variables.less";
+@import "less/mixins.less";
+
+@import "less/normalize.less";
+@import "less/print.less";
+//@import "less/glyphicons.less";
+
+@import "less/scaffolding.less";
+@import "less/type.less";
+@import "less/code.less";
+@import "less/breadcrumbs";
+
+@import "less/navs";
+@import "less/panels";
+@import "less/badges";
+@import "less/labels";
+@import "less/utilities";
+
+body{
+  font: 12px/1.5 "Microsoft YaHei UI",Arial,Ubuntu;
+  //font-family: "Microsoft YaHei UI",Arial,Ubuntu;
+}
+.container{
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  &:extend(.clearfix all);
+}
+
+.header{
+  //padding:4px 0;
+  border-bottom: 1px solid #e6e6e6;
+  background-color: #4b4442;
+  color: #d5d5d5;
+  font-size: 12px;
+  line-height: 28px;
+  border-bottom: 2px solid #69b219;
+}
+
+.m-top{
+  margin: 5px 0;
+  .title{
+    font-size:14px;
+  }
+
+  .dl-horizontal{
+    margin-top: 8px;
+    dt{
+      width: 65px;
+      text-align: center;
+    }
+    dd{
+      margin-left: 85px;
+    }
+  }
+
+  .cat-items{
+    padding: 5px;
+  }
+}
+
+.panel-list{
+  .panel-heading,.panel-body{
+    padding: 5px 8px;
+  }
+}
+
+.breadcrumb{
+  margin-bottom: 10px;
+}
+@import "nav";
+@import "item";
+@import 'intor';
+@import "torrent-tree";
+@import "content";
+
+
+
+.fa-4{
+  font-size:4em;
+}
+
+.footer{
+  margin-top: 10px;
+  padding: 10px;
+  border-top:2px solid #666;
+}

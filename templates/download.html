@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="{% url "index" %}">首页</a></li>
+            <li><a href="{{ torrent.movie.get_absolute_url }}">{{ torrent.movie.name }}</a></li>
+            <li class="active">{{ torrent.name }}</li>
+        </ol>
+    
+        <div class="clearfix text-center" style="margin-top: 30px">
+            <h2>{{ torrent.movie.name }}</h2>
+
+            <p class="clearfix">
+                <a href="{{ torrent.path }}?download/{{ torrent.name }}.torrent" class="pull-left"><i class="fa fa-download fa-4" aria-hidden="true">下载种子文件</i></a>
+                <a href="{{ magnet }}" class="pull-right"><i class="fa fa-magnet fa-4" aria-hidden="true">复制磁力链接</i></a>
+            </p>
+
+            <p class="clearfix" style="margin-top: 20px;">
+                <div class="header">
+                    种子文件列表：
+                </div>
+                <div>
+                    <ul>
+                        {% for foo in detail %}
+                        <li>{{ foo.name }}</li>
+                        {% endfor %}
+                        
+                    </ul>
+                </div>
+
+                <div class="header">
+                    磁力链接：
+                </div>
+            {% spaceless %}
+            <textarea name="" id="" readonly style="width: 100%; height: 50px">magnet:?xt=urn:btih:{{ torrent.hash }}</textarea>
+            {% endspaceless %}
+            </p>
+
+        </div>
+    </div>
+{% endblock %}

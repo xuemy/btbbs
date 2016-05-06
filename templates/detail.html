@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+<div class="container">
+    
+    <div class="content">
+        <h1>{{ detail.name }} <span>({{ detail.year }})</span></h1>
+
+        <div class="clearfix">
+            <div class="article pull-left">
+                <div class="pic pull-left">
+                    <img src="{{ detail.image }}?imageView2/2/w/150/h/220/interlace/0/q/100" alt="{{ detail.name }}">
+                    <span><a href="#download">下载地址</a></span>
+                </div>
+                <div class="info pull-left">
+                    {{ detail.info|safe }}
+                </div>
+            </div>
+
+            <div class="aside pull-left"></div>
+        </div>
+        <div class="clearfix">
+            <p class="tag">标签：{% for tag in detail.tags.all %}
+                <a href="{{ tag.get_absolute_url }}">
+                <span class="label label-{% cycle  'default' 'primary' 'success' 'info' 'warning'%}">{{ tag }}</span>
+                </a>
+            {% endfor %}
+            </p>
+            <div class="pull-left intro-main">
+            {{ detail.intro.intro|safe }}
+            </div>
+
+            <div class="pull-right intro-aside">
+
+            </div>
+        </div>
+
+        <div class="torrent-f" id="download">
+            <h2>{{ name }} Torrent和Magnet下载地址&nbsp;&nbsp;·&nbsp;&nbsp;·&nbsp;&nbsp;·&nbsp;&nbsp;·&nbsp;&nbsp;·&nbsp;&nbsp;·</h2>
+
+            <ul class="">
+                {% for torrent in torrents %}
+                    <li>
+                        <a href="{{ torrent.obj.get_absolute_url }}?etag={{ torrent.obj.etag }}&name={{ torrent.obj.name }}">
+                            <p>{{ detail.name }}.<span class="label label-danger">{{ torrent.total }}</span>.torrent</p>
+                        </a>
+                        <div class="sub-f">
+                        {% for k, v in torrent.sub.iteritems %}
+                            {% if v.have %}
+                            <p>种子文件中包含 <span class="t-name ">{{ v.name }}</span> {{ v.files|length }}个:</p>
+                                <ul class="list-unstyled">
+                                     {% for file in v.files %}
+                                <li>{{ file.name }} &nbsp;&nbsp;{{ file.n_size }}</li>
+                            {% endfor %}
+                                </ul>
+
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+
+
