@@ -2,6 +2,10 @@
 import json
 import os
 import string
+
+from qiniu import Auth, put_file, put_data, etag
+from qiniu.utils import etag_stream
+
 FILM_SUFFIX = [
     # windows 媒体
     '.asf', '.avi', '.wm', '.wmp', '.wmv',
@@ -128,7 +132,42 @@ def parse_torrent(torrent):
     except:
         return
 
+def upload_to_qiniu(AK, SK, BUCKET_NAME,FILE_OBJ,FILE_NAME,):
+    '''
+    上传文件到七牛云，并返回 文件hash
+
+    BUCKET_NAME 七牛资源空间名
+    FILE_OBJ 文件二进制流
+    FILE_NAME 文件保存到七牛云上的文件名
+    '''
+    q = Auth(AK, SK)
+    token = q.upload_token(BUCKET_NAME, FILE_NAME, 3600)
+    # ret
+    # 一个dict变量，类似 {"hash": "<Hash string>", "key": "<Key string>"}
+    # info
+    """七牛HTTP请求返回信息类
+
+    该类主要是用于获取和解析对七牛发起各种请求后的响应包的header和body。
+
+    Attributes:
+        status_code: 整数变量，响应状态码
+        text_body:   字符串变量，响应的body
+        req_id:      字符串变量，七牛HTTP扩展字段，参考 http://developer.qiniu.com/docs/v6/api/reference/extended-headers.html
+        x_log:       字符串变量，七牛HTTP扩展字段，参考 http://developer.qiniu.com/docs/v6/api/reference/extended-headers.html
+        error:       字符串变量，响应的错误内容
+    """
+    ret, info = put_data(token, FILE_NAME, FILE_OBJ)
+    if info.status_code:
+        if ret['hash'] == etag_stream(FILE_OBJ):
+            return ret['hash']
+        return None
+    return None
+
+
 if __name__ == '__main__':
-    s = '''[{"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Sinister.2012.720p.BluRay.X264-AMIABLE.mkv", "size": 4693301804}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Sample/sinister.2012.720p.bluray.x264-amiable.sample.mkv", "size": 55269373}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Subs/sinister.2012.720p.bluray.x264-amiable.subs.rar", "size": 1328525}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Subs/sinister.2012.720p.bluray.x264-amiable.subs.sfv", "size": 58}]'''
-    print json.loads(s)
-    print get_torrent_film(json.loads(s))
+    # s = '''[{"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Sinister.2012.720p.BluRay.X264-AMIABLE.mkv", "size": 4693301804}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Sample/sinister.2012.720p.bluray.x264-amiable.sample.mkv", "size": 55269373}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Subs/sinister.2012.720p.bluray.x264-amiable.subs.rar", "size": 1328525}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Subs/sinister.2012.720p.bluray.x264-amiable.subs.sfv", "size": 58}]'''
+    # print json.loads(s)
+    # print get_torrent_film(json.loads(s))
+    ak = 'jOCEgrOksRJIbggo-qp6dLujp3Vhjc7DzHmin3vs'
+    sk = '-sn9yKeqdR7QYAVlMZZcDm4Ea44uI6sc4yc3IuJm'
+    upload_to_qiniu(ak,sk,'xiyou-image','asdfsadfasdfasd','ceshiinfo.txt')

@@ -26,6 +26,15 @@
 
 {#    item1    #}
     <div class="container">
+
+    {% for movie in last_movie %}
+    {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}<br>
+    {% endfor %}
+
+        {% for movie in last_show_movie %}
+    {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}<br>
+    {% endfor %}
+
         <a class="item" target="_blank" href="https://movie.douban.com/subject/26585014/?tag=热门&amp;from=gaia">
 
             <div class="cover-wp" data-isnew="false" data-id="26585014">

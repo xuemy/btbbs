@@ -13,7 +13,14 @@ from bbs.utils import humanbytes, get_torrent_film, get_file_detail
 def index(request):
     # types = Type.get_type_list()
 
-    return render(request,'index.html',)
+    # 最新电影
+    last_movie = Movie.objects.all()[:20]
+    # 最新上映的电影
+    last_show_movie = Movie.objects.exclude(show_time=None).order_by('-show_time').all()[:20]
+    return render(request,'index.html', {
+        'last_movie': last_movie,
+        'last_show_movie':last_show_movie,
+    })
 
 
 def thread(request):

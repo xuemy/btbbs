@@ -1,12 +1,17 @@
 #encoding:utf-8
 from __future__ import unicode_literals
 
+import logging
 import os
+
+import datetime
+import re
 
 import django
 from jinja2 import Template
 from slugify import slugify
-
+import time
+import dateutil
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "btbbs.settings")
 django.setup()
 from django.db import connections
@@ -17,11 +22,7 @@ import pymongo
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 db = client['movie']
 
-def init_type():
-    t = Type(name='电影')
-    t2 = Type(name='电视剧')
-    t.save()
-    t2.save()
+
 
 def parse_detail(detail):
     # detail = simplejson.loads(detail)
@@ -83,86 +84,10 @@ class Files(models.Model):
     ctime = models.DateTimeField(auto_now_add=True)
     views = models.IntegerField(default=0)
 '''
-def add_thread():
-    cursor = connections['torrent'].cursor()
-    cursor.execute('select * from douban_info')
-    for res in cursor.fetchall():
-        try:
-            detal = simplejson.loads(res[3])
-        except:
-            continue
-        detal = parse_detail(detal)
-        message = get_html(detal)
-        _t = Thread.objects.filter(uuid=detal['id'])
-        if _t.exists():
-            t = _t.first()
-        else:
-            t = Thread(
-                uuid=detal['id'],
-                name=detal.get('name'),
-                year=detal.get('year', 0),
-            )
-            try:
-                t.save()
-            except:
-                continue
-            post = Post(massage=message)
-            post.thread= t
-            post.save()
-        subtype = detal.get('subtype')
-        if subtype == 'movie':
-            t1 = Type.objects.get(name='电影')
-        else:
-            t1 = Type.objects.get(name='电视剧')
-
-        types = detal.get('type')
-        if types:
-            for type in types:
-                _type, created = Type.objects.get_or_create(name=type, parent=t1)
-                # if created:
-                t.types.add(_type)
-        area = detal.get('area')
-        if area:
-            for a in area:
-                _a, created = Area.objects.get_or_create(name=a)
-                # if created:
-                t.area.add(_a)
-        cursor.execute("select `name`,`info_hash`,`etag`,`detail`,`key` from torrent_info WHERE douban_id={0}".format(detal['id']))
-        for ress in cursor.fetchall():
-            if not ress[2]:
-                continue
-            _file = Files.objects.filter(etag=ress[2])
-            if not _file.exists():
-                _file = Files(
-                    name=ress[0],
-                    etag=ress[2],
-                    path = 'http://7xqsqu.com1.z0.glb.clouddn.com/%s' % ress[4],
-                    detail=ress[3]
-                )
-                _file.save()
-            else:
-                _file = _file.first()
-            t.files.add(_file)
-        t.save()
-        # print('成功添加电影 %s'.encode('gb2312') % detal['name'])
 
 
 
-def print_subtype():
-    cursor = connections['torrent'].cursor()
-    cursor.execute('select * from douban_info')
-    for res in cursor.fetchall():
-        try:
-            detail = simplejson.loads(res[3])
-        except:
-            continue
-        detail = parse_detail(detail)
-        # print detail
-        subtype = detail.get('subtype')
-        if subtype and subtype != 'movie':
-            print subtype, detail['id'], detail['name']
-        # if detail.get['subtype'] and detail.get['subtype'] != 'movie':
-        #     print (detail.get['subtype'],detail['id'],detail['name'])
+
 
 def add_type_slug():
     all_types = Type.objects.all()
@@ -219,8 +144,82 @@ def move_category():
 
             movie.save()
 
+def getLoger(log_name, level=logging.INFO,file_handler = False):
+    """
+    获取日志对象
+    Args:
+        :param log_name: string 日志对象名，即日志文件名
+        :param level:  输出级别，写入级别为WARING
+    Return:
+        :return: 日志对象
+    """
+    # 创建一个logger
+    logger = logging.getLogger(log_name)
+    # 设置日志级别
+    logger.setLevel(level)
+    # 定义输出格式
+    formatter = logging.Formatter('%(asctime)s %(filename)s [line:%(lineno)d] %(levelname)s:%(message)s')
+
+    if file_handler:
+        # 创建文件处理器
+        file_handler = logging.FileHandler('%s.log' % log_name.upper())
+        file_handler.setLevel(logging.INFO)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+    # 创建输出处理器
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
+
+    # 给logger添加处理器
+
+    return logger
+FORMAT = [
+    '%Y-%m-%d',
+    '%Y-%m',
+    '%Y',
+]
+def format_datetime(date_str):
+    for f in FORMAT:
+        try:
+            return datetime.datetime.strptime(date_str, f).date()
+        except:
+            continue
+    return None
+
+SHOW_RE = re.compile(ur'首播:\s*(?P<time>[\d-]+)')
+
+
+
+def add_shangyin():
+    log = getLoger('add_show_time')
+    error_log = getLoger('error',file_handler=True)
+    def _add_show_time(movie):
+        info = movie.info
+        if info:
+            log.info('开始创建ID:{} 的showtime'.format(movie.id))
+            result = SHOW_RE.findall(info)
+            if result:
+                show_time = result[0]
+                show_time_temp = format_datetime(show_time)
+                if show_time_temp:
+                    movie.show_time = show_time_temp
+                    movie.save()
+                    log.info('创建成功---SHOW_TIME：{}'.format(show_time))
+                else:
+                    error_log.info(
+                        'ID:{0},douban_id:{1},name:{2},含有show_time 但是没有成功'.format(movie.id, movie.douban_id, movie.name)
+                    )
+            else:
+                log.info('ID:{0}--NAME:{1}----DOUBAN:{2}没有show_time，无法创建'.format(movie.id, movie.name, movie.douban_id))
+    map(_add_show_time, Movie.objects.filter(show_time=None).all())
+
 if __name__ == '__main__':
-    move_category()
+    add_shangyin()
+    # d = format_datetime('2016')
+    # print type(d)
+    # move_category()
     # movies = Movie.objects.all()
     # for movie in movies:
     #     torrents = movie.torrent.all()

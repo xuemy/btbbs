@@ -1,12 +1,8 @@
 # encoding:utf-8
-# from __future__ import unicode_literals
 
 from django.db import models
 from django.db.models import permalink
-from bson.objectid import ObjectId
-from django.db.models.signals import post_migrate
-from django.dispatch import receiver
-from qiniu.utils import etag_stream
+
 # Create your models here.
 '''
 year 年代
@@ -62,128 +58,7 @@ detail_format = '''
 <p></p>
 '''
 
-# class Area(models.Model):
-#     aid = models.AutoField(primary_key=True)
-#     name = models.CharField(max_length=255, db_index=True)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#
-# class Type(models.Model):
-#     name = models.CharField(max_length=50, db_index=True)
-#     slug = models.CharField(max_length=50, db_index=True, default="")
-#     parent = models.ForeignKey('self', models.SET_NULL, blank=True, null=True, related_name='subtype')
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#     def get_top_type(self):
-#         return self.objects.filter(parent__isnull=True).all()
-#
-#     @staticmethod
-#     def get_type_list():
-#         res_list = {}
-#         top_types = Type.objects.filter(parent__isnull=True).all()
-#         for top_type in top_types:
-#             subtype = top_type.subtype.all()
-#             res_list[top_type] =[sub for sub in subtype]
-#         return res_list
-#
-#     @permalink
-#     def get_absolute_url(self):
-#         return ('category', (), {
-#             'slug':self.slug,
-#         })
-#
-# class Forum(models.Model):
-#     '''
-#     论坛分类
-#     '''
-#     fid = models.AutoField(primary_key=True)
-#     name = models.CharField(max_length=255, null=False, blank=False, db_index=True)
-#     threads = models.IntegerField(verbose_name="帖子数", default=0)
-#     ctime = models.DateTimeField(auto_now_add=True)
-#     brief = models.CharField(verbose_name="摘要", max_length=255, null=True)
-#     rank = models.SmallIntegerField(verbose_name='排列', default=0)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#
-# class Files(models.Model):
-#     name = models.CharField(max_length=255)
-#     etag = models.CharField(max_length=40, unique=True)
-#     path = models.CharField(max_length=255)
-#     detail = models.TextField(verbose_name='文件主要内容', default='')
-#     ctime = models.DateTimeField(auto_now_add=True)
-#     views = models.IntegerField(default=0)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-# class DownloadLink(models.Model):
-#     name = models.CharField(max_length=255)
-#     link = models.CharField(max_length=255)
-#     views = models.IntegerField(default=0)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-# class Thread(models.Model):
-#     tid = models.AutoField(primary_key=True)
-#     uuid = models.IntegerField(unique=True)
-#     name = models.CharField(verbose_name=u'主题', max_length=255)
-#     views = models.IntegerField(default=1)
-#     ctime = models.DateTimeField(auto_now_add=True)
-#     utime = models.DateTimeField(auto_now=True)
-#     # forum = models.ForeignKey(Forum)
-#     icon = models.CharField(max_length=255, null=True)
-#     files_num = models.SmallIntegerField(verbose_name="帖子文件个数", default=0)
-#     year = models.SmallIntegerField(db_index=True, null=True)
-#
-#     files = models.ManyToManyField(Files)
-#     types = models.ManyToManyField(Type)
-#     area = models.ManyToManyField(Area)
-#     download_link = models.ManyToManyField(DownloadLink)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#     @permalink
-#     def get_absolute_url(self):
-#         return ('thread', (), {
-#             'tid': self.tid,
-#         })
-#
-# class Post(models.Model):
-#     pid = models.AutoField(primary_key=True)
-#     massage = models.TextField(null=True, blank=True)
-#     thread = models.ForeignKey(Thread)
-#
-#
-# def _get_or_create_Forum(name):
-#     forum,ok = Forum.objects.get_or_create(name=name)
-#     return forum if ok else None
-#
-#
-# def NewThread(fname, tname, massage, year=None, types=None, area=None, files=None):
-#     forum = _get_or_create_Forum(fname)
-#     thread = Thread(name=tname, forum=forum)
-#     thread.save()
-#     post = Post(massage=massage, thread=thread)
-#     post.save()
-#     if types:
-#         for t in types:
-#             _t = Type.objects.get_or_create(name=t)
-#             thread.types.add(_t[0])
-#     if area:
-#         for a in area:
-#             _a = Area.objects.get_or_create(name=a)
-#             thread.area.add(_a[0])
-#     thread.save()
-#     forum.threads += 1
-#     forum.save()
+
 
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True, unique=True)
@@ -193,12 +68,6 @@ class Category(models.Model):
 # def init_category(sender, **kwargs):
 #     init_ = ['电影', '电视剧', '综艺', '音乐', '图书', '软件']
 #     Category.objects.bulk_create([Category(name=x) for x in init_])
-
-
-
-# class Movie_Type(models.Model):
-#     name = models.CharField(max_length=200, db_index=True)
-#     parent = models.ForeignKey('self', models.SET_NULL, blank=True, null=True, related_name='sons')
 
 
 
@@ -261,6 +130,7 @@ class Movie(models.Model):
     rating = models.FloatField(db_index=True, default=0.0, null=True)
     views = models.IntegerField(default=0)
     image = models.CharField(max_length=255,blank=True,null=True)
+    show_time =  models.DateField(null=True)
     ctime = models.DateTimeField(auto_now_add=True)
     utime = models.DateTimeField(auto_now=True)
     summary = models.TextField(null=True, blank=True)
@@ -278,6 +148,8 @@ class Movie(models.Model):
         index_together = [
 
         ]
+
+        ordering = ['-year', '-ctime']
         
     @permalink
     def get_absolute_url(self):
