@@ -6,7 +6,7 @@ import json
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 
-from bbs.models import Movie, Torrent
+from bbs.models import Movie, Torrent, Category
 from bbs.utils import humanbytes, get_torrent_film, get_file_detail
 
 
@@ -16,7 +16,7 @@ def index(request):
     # 最新电影
     last_movie = Movie.objects.all()[:20]
     # 最新上映的电影
-    last_show_movie = Movie.objects.exclude(show_time=None).order_by('-show_time').all()[:20]
+    last_show_movie = Movie.objects.exclude(torrent__isnull=True).exclude(show_time=None).filter(category__name='电视剧').order_by('-show_time').all()[:12]
     return render(request,'index.html', {
         'last_movie': last_movie,
         'last_show_movie':last_show_movie,

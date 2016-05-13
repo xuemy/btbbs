@@ -10,9 +10,8 @@
         </span>
         </div>
     </div>
-    
-    <div class="nav-movie">
 
+    <div class="nav-movie">
         <div class="container">
             <div class="nav-item">
                 <ul class="list-unstyled list-inline">
@@ -24,40 +23,66 @@
         </div>
     </div>
 
-{#    item1    #}
-    <div class="container">
+    <div class="container clearfix">
+        <div class="item-main clearfix">
+            <div class="article">
+                <div class="">
+                    <div class="page-header">
+                        <h3>热门电影 <small class="">更多>></small></h3>
+                    </div>
+                    <div class="items">
+                        {% for movie in last_show_movie %}
+                            <a class="item" target="_blank" href="{{ movie.get_absolute_url }}">
+                                <div class="cover-wp" data-isnew="false" data-id="{{ movie.douban_id }}">
+                                    <img src="{{ movie.image }}"
+                                         alt="{{ movie.name }}?imageView2/2/w/140/h/200/interlace/0/q/100"
+                                         data-x="2100" data-y="3000" onload="loadImg(this)"
+                                         style="width: 100%; opacity: 1;">
+                                </div>
+                                {% load index_tag %}
+                                <p>{{ movie.name|name_tag }}<strong>{{ movie.rating }}</strong></p>
 
-    {% for movie in last_movie %}
-    {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}<br>
-    {% endfor %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+            <div class="aside pull-right">
+                asdfasdfsad
+            </div>
+        </div>
+
+    </div>
+
+
+
+    {#    item1    #}
+    <div class="container ">
+
+        {% for movie in last_movie %}
+            {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}<br>
+        {% endfor %}
 
         {% for movie in last_show_movie %}
-    {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}<br>
-    {% endfor %}
+            {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}----{{ movie.id }}<br>
+        {% endfor %}
 
         <a class="item" target="_blank" href="https://movie.douban.com/subject/26585014/?tag=热门&amp;from=gaia">
-
             <div class="cover-wp" data-isnew="false" data-id="26585014">
-                <img src="https://img1.doubanio.com/view/movie_poster_cover/lpst/public/p2329535697.jpg" alt="希特勒回来了" data-x="2100" data-y="3000" onload="loadImg(this)" style="width: 100%; opacity: 1;">
+                <img src="https://img1.doubanio.com/view/movie_poster_coWver/lpst/public/p2329535697.jpg" alt="希特勒回来了"
+                     data-x="2100" data-y="3000" onload="loadImg(this)" style="width: 100%; opacity: 1;">
             </div>
-            <p>
-
-
-                希特勒回来了
-
-
-                    <strong>8.2</strong>
-
-            </p>
+            <p>希特勒回来了<strong>8.2</strong></p>
 
         </a>
     </div>
 
 
-   {# item2   #}
+    {# item2   #}
 
     <div class="container" style="width: 590px">
-<p class="ul first"></p>
+        <p class="ul first"></p>
         <table width="100%" class="" style="margin-bottom: 3px">
             <tbody>
             <tr class="item2">
@@ -101,37 +126,78 @@
             </tr>
             </tbody>
         </table>
-<p class="ul first"></p>
+        <p class="ul first"></p>
     </div>
-    {% include "m-top.html" %}
-{#nav#}
+{#    {% include "m-top.html" %}#}
+    {#nav#}
     <div class="container">
-    <ul class="nav nav-pills">
-  <li role="presentation" class="active"><a href="#">Home</a></li>
-  <li role="presentation"><a href="#">Profile</a></li>
-  <li role="presentation"><a href="#">Messages</a></li>
-</ul>
+        <ul class="nav nav-pills">
+            <li role="presentation" class="active"><a href="#">Home</a></li>
+            <li role="presentation"><a href="#">Profile</a></li>
+            <li role="presentation"><a href="#">Messages</a></li>
+        </ul>
 
 
         <div class="mm-wrapper">
             <div class="mm">
 
-						<ul><li data-note="1" class="on" id="longlong-channel-home"><a href="#" target="_self" class="tab-item home">我的主页</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-news"><a href="http://sh.qihoo.com/" class="tab-item news">新闻头条</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-tv"><a href="http://v.360.cn/dianshi/index.html" class="tab-item tv">电 视 剧</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-movie"><a href="http://v.360.cn/dianying/index.html" class="tab-item movie">最新电影</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-game"><a href="http://xiaoyouxi.360.cn/" class="tab-item game">小 游 戏</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-novel"><a href="http://xiaoshuo.360.cn/" class="tab-item novel">小说大全</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-travel"><a href="http://go.360.cn/holiday" class="tab-item travel">旅游度假</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-mall"><a href="http://mall.360.cn/?fname=hao_top_mall&amp;eee=hao_top_mall" class="tab-item mall">品牌特卖</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li><li id="longlong-channel-tuan"><a href="http://tuan.360.cn/?fname=hao_top_tuan&amp;eee=hao_top_tuan" class="tab-item tuan">今日团购</a><ins class="hover-bg"></ins><ins class="default-bg"></ins></li></ul>
+                <ul>
+                    <li data-note="1" class="on" id="longlong-channel-home"><a href="#" target="_self"
+                                                                               class="tab-item home">我的主页</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-news"><a href="http://sh.qihoo.com/" class="tab-item news">新闻头条</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-tv"><a href="http://v.360.cn/dianshi/index.html" class="tab-item tv">电 视
+                        剧</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-movie"><a href="http://v.360.cn/dianying/index.html"
+                                                       class="tab-item movie">最新电影</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-game"><a href="http://xiaoyouxi.360.cn/" class="tab-item game">小 游 戏</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-novel"><a href="http://xiaoshuo.360.cn/" class="tab-item novel">小说大全</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-travel"><a href="http://go.360.cn/holiday" class="tab-item travel">旅游度假</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-mall"><a href="http://mall.360.cn/?fname=hao_top_mall&amp;eee=hao_top_mall"
+                                                      class="tab-item mall">品牌特卖</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                    <li id="longlong-channel-tuan"><a href="http://tuan.360.cn/?fname=hao_top_tuan&amp;eee=hao_top_tuan"
+                                                      class="tab-item tuan">今日团购</a>
+                        <ins class="hover-bg"></ins>
+                        <ins class="default-bg"></ins>
+                    </li>
+                </ul>
             </div>
 
         </div>
 
 
-
     </div>
-{#navend#}
+    {#navend#}
     <div class="m-main">
         <div class="container">
 
             <ol class="breadcrumb">
                 <li><a href="#">Home</a></li>
-          <li><a href="#">Library</a></li>
-          <li class="active">Data</li>
+                <li><a href="#">Library</a></li>
+                <li class="active">Data</li>
             </ol>
 
             <div class="panel panel-default panel-list">

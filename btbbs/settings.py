@@ -1,3 +1,5 @@
+#encoding:utf-8
+
 """
 Django settings for btbbs project.
 
@@ -136,3 +138,7 @@ STATICFILES_DIRS = [
 ]
 
 TEMPLATE_DEBUG = True
+
+
+TV_TAGS = ["美剧", "英剧", "韩剧", "日剧", "国产剧", "港剧", "日本动画"]
+MOVIE_TAGS = ["热门", "最新", "经典", "可播放", "豆瓣高分", "冷门佳片", "华语", "欧美", "韩国", "日本", "动作", "喜剧", "爱情", "科幻", "悬疑", "恐怖", "治愈"]

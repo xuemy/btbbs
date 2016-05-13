@@ -1585,6 +1585,20 @@ body {
   width: 73px;
   z-index: 1;
 }
+.item-main {
+  display: block;
+}
+.item-main .article {
+  width: 645px;
+  float: left;
+  padding-right: 40px;
+}
+.item-main .aside {
+  width: 310px;
+}
+.items a {
+  text-decoration: none;
+}
 .item {
   display: block;
   float: left;
@@ -1593,6 +1607,7 @@ body {
   text-align: center;
   margin: 0 11.25px 10px 0;
   width: 140px;
+  text-decoration: none;
 }
 .item .cover-wp {
   background-size: 100%;
@@ -1610,6 +1625,7 @@ body {
 }
 .item strong {
   color: #e09015;
+  margin-left: 5px;
 }
 table {
   border-collapse: collapse;
@@ -1745,6 +1761,10 @@ table td {
 .content .intro-main {
   width: 730px;
   padding: 10px;
+}
+.page-header {
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 .fa-4 {
   font-size: 4em;
