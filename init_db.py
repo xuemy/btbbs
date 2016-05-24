@@ -1,27 +1,23 @@
-#encoding:utf-8
+# encoding:utf-8
 from __future__ import unicode_literals
 
+import datetime
 import logging
 import os
-
-import datetime
 import re
 
 import django
+from bson import ObjectId
 from jinja2 import Template
 from slugify import slugify
-import time
-import dateutil
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "btbbs.settings")
 django.setup()
-from django.db import connections
-import simplejson
 from bbs.models import Movie, Category
 import pymongo
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 db = client['movie']
-
 
 
 def parse_detail(detail):
@@ -49,6 +45,7 @@ def parse_detail(detail):
         # },
     )
 
+
 def get_html(detail):
     f = '''
 <p>
@@ -69,11 +66,12 @@ def get_html(detail):
 '''
     d = {}
     for k, v in detail.iteritems():
-        if isinstance(v,list):
+        if isinstance(v, list):
             v = "/ ".join(v)
         d[k] = v
 
     return f.format(**d)
+
 
 '''
 class Files(models.Model):
@@ -86,21 +84,19 @@ class Files(models.Model):
 '''
 
 
-
-
-
 def add_type_slug():
     all_types = Type.objects.all()
     for t in all_types:
         if t.name == '电影':
             t.slug = 'movie'
             t.save()
-        elif t.name=='电视剧':
+        elif t.name == '电视剧':
             t.slug = 'tv'
             t.save()
         else:
-            t.slug = slugify(t.name,separator="")
+            t.slug = slugify(t.name, separator="")
             t.save()
+
 
 def add_intro(**kwargs):
     temp = '''
@@ -130,21 +126,23 @@ def add_intro(**kwargs):
     template = Template(temp)
     return template.render(kwargs)
 
+
 def move_category():
     for m in db.movie_items.find():
         movie = Movie.objects.get(douban_id=m['id'])
         if not m['category']:
-            category = Category.objects.get(name = u'电视剧')
+            category = Category.objects.get(name=u'电视剧')
             movie.category.add(category)
             movie.save()
         else:
-            category = Category.objects.get(name = u'电影')
+            category = Category.objects.get(name=u'电影')
             cats = m['category']
-            movie.category= map(lambda x : category.sons.get_or_create(name=x)[0],cats)
+            movie.category = map(lambda x: category.sons.get_or_create(name=x)[0], cats)
 
             movie.save()
 
-def getLoger(log_name, level=logging.INFO,file_handler = False):
+
+def getLoger(log_name, level=logging.INFO, file_handler=False):
     """
     获取日志对象
     Args:
@@ -175,11 +173,15 @@ def getLoger(log_name, level=logging.INFO,file_handler = False):
     # 给logger添加处理器
 
     return logger
+
+
 FORMAT = [
     '%Y-%m-%d',
     '%Y-%m',
     '%Y',
 ]
+
+
 def format_datetime(date_str):
     for f in FORMAT:
         try:
@@ -188,13 +190,14 @@ def format_datetime(date_str):
             continue
     return None
 
-SHOW_RE = re.compile(ur'首播:\s*(?P<time>[\d-]+)')
 
+SHOW_RE = re.compile(ur'首播:\s*(?P<time>[\d-]+)')
 
 
 def add_shangyin():
     log = getLoger('add_show_time')
-    error_log = getLoger('error',file_handler=True)
+    error_log = getLoger('error', file_handler=True)
+
     def _add_show_time(movie):
         info = movie.info
         if info:
@@ -213,10 +216,44 @@ def add_shangyin():
                     )
             else:
                 log.info('ID:{0}--NAME:{1}----DOUBAN:{2}没有show_time，无法创建'.format(movie.id, movie.name, movie.douban_id))
+
     map(_add_show_time, Movie.objects.filter(show_time=None).all())
 
+
+def init_y_id():
+    y = db['y']
+    _re = re.compile(r'\/(\d+)')
+    log = getLoger('init_y')
+    def x(y_obj):
+        douban_id = _re.findall(y_obj['id'])[0]
+        y.update(
+            {'_id': ObjectId(y_obj['_id'])},
+            {'$set': {'douban_id': douban_id }}
+        )
+        log.info('成功 %s--%s' % (douban_id, y_obj['_id']))
+    map(x, y.find())
+def init_category():
+    movie = Category.objects.get(name='电影')
+    tv = Category.objects.get(name='电视剧')
+
+    def func(obj):
+        t = obj.get('subtype')
+        try:
+            m = Movie.objects.get(douban_id=obj['id'])
+        except:
+            return
+        if t and t == 'movie':
+            m.category = movie
+            m.save()
+        if t and t == 'tv':
+            m.category = tv
+            m.save()
+    map(func, db.x.find())
+
 if __name__ == '__main__':
-    add_shangyin()
+    init_category()
+    # init_y_id()
+    # add_shangyin()
     # d = format_datetime('2016')
     # print type(d)
     # move_category()
@@ -262,7 +299,7 @@ if __name__ == '__main__':
     #         continue
 
     # f = open('id.temp','w')
-    #for m in db.movie_items.find():
+    # for m in db.movie_items.find():
     #     id = m['id']
     #     name = m['title']
     #     year = m['year']
@@ -329,5 +366,3 @@ if __name__ == '__main__':
     #     movie.save()
     #     f.write("{0}\n".format(id))
     #     print '成功添加{0}'.format(name)
-
-

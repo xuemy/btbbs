@@ -24,13 +24,13 @@ sitemaps = {
 urlpatterns = [
     url(r'^$', index.index , name='index'),
 
-    url(r'^detail/(?P<tid>\d+).html$', detail.V.as_view(), name='detail'),
+    url(r'^detail/(?P<pk>\d+).html$', detail.V.as_view(), name='detail'),
 
     url(r'^download/(?P<tid>\d+)$', download.view, name='download'),
 
     url(r'^tag/(?P<tag_name>.+)$', tag.Tag.as_view(), name='tag'),
 
-    url(r'^(?P<category>[tvmovie])', category.Category.as_view(), name='category'),
+    url(r'^(?P<category>(tv)|(movie))$', category.Category.as_view(), name='category'),
 
 
 

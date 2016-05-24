@@ -97,8 +97,8 @@ class Tags(models.Model):
 
     @permalink
     def get_absolute_url(self):
-        return ('tag',(),{
-            'tag': self.name,
+        return ('tag', (), {
+            'tag_name': self.name,
         })
 class Torrent(models.Model):
     name = models.CharField(max_length=255)
@@ -135,11 +135,12 @@ class Movie(models.Model):
     utime = models.DateTimeField(auto_now=True)
     summary = models.TextField(null=True, blank=True)
     info = models.TextField(null=True, blank=True)
-    intro = models.ForeignKey('Movie_intro', on_delete=models.CASCADE)
+    intro = models.OneToOneField('Movie_intro', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tags)
     # torrent = models.ManyToManyField(Torrent)
     douban_id = models.IntegerField(null=True, db_index=True)
-    category = models.ManyToManyField(Category)
+    category = models.ForeignKey(Category, null=True)
+    # subcategory = models.ManyToManyField(Category)
 
     def __unicode__(self):
         return self.name
@@ -154,7 +155,7 @@ class Movie(models.Model):
     @permalink
     def get_absolute_url(self):
         return ('detail', (), {
-            'tid': self.id,
+            'pk': self.id,
         })
 class Movie_intro(models.Model):
     intro = models.TextField(null=True, default="")

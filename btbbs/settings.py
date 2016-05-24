@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
+
+
     'bbs',
+    # 'pagination',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -49,6 +53,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'pagination.middleware.PaginationMiddleware',
 ]
 
 ROOT_URLCONF = 'btbbs.urls'
