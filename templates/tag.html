@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="col-md-9">
+        {% for obj in page_obj %}
+                    <div class="tag-item">
+                        <table width="100%" class="item2" style="margin-bottom: 3px">
+                            <tr class="">
+                                <td width="100" valign="top">
+                                    <a class="nbg" href="{{ obj.get_absolute_url }}" title="{{ obj.name }}">
+                                        <img src="{{ obj.image }}" alt="{{ obj.name }}" class="" style="width: 65px; height: 100px">
+                                    </a>
+                                </td>
+
+                                <td valign="top">
+                                    <div class="pl2">
+                                        <a href="{{ obj.get_absolute_url }}" class="">{{ obj.name }}{# / <span style="font-size:12px;">吸特乐回来了(台) / 元首在现代</span></a>#}
+                                        <p class="pl">{{ obj.info | striptags}}</p>
+                                        <div class="star clearfix">
+                                            <span class="allstar40"></span><span class="rating_nums">{{ obj.rating }}</span><span class="pl">(分)</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <p class="ul first"></p>
+                    </div>
+        {% endfor %}
+    {% include "pagination.html" %}
+    </div>
+    <div class="col-md-3"></div>
+{#    <div class="container">#}
+{#        <div class="tag">#}
+{#            <div class="article clearfix">#}
+{#            <div class="page-header">#}
+{#                <h3>关于标签《 {{ name }} 》的电影和电视剧</h3>#}
+{#            </div>#}
+{#            <p class="order">#}
+{#                <a href="?type=rating&order=desc">根据豆瓣评分排序</a>#}
+{#                <a href="?type=pubdate&order=desc">根据上映日期排序</a>#}
+{#                <a href="?type=year&order=desc">根据年代排序</a>#}
+{#            </p>#}
+{#                {% for obj in objs %}#}
+{#                    <div class="tag-item">#}
+{#                        <table width="100%" class="item2" style="margin-bottom: 3px">#}
+{#                            <tr class="">#}
+{#                                <td width="100" valign="top">#}
+{#                                    <a class="nbg" href="{{ obj.get_absolute_url }}" title="{{ obj.name }}">#}
+{#                                        <img src="{{ obj.image }}" alt="{{ obj.name }}" class="" style="width: 65px; height: 100px">#}
+{#                                    </a>#}
+{#                                </td>#}
+{##}
+{#                                <td valign="top">#}
+{#                                    <div class="pl2">#}
+{#                                        <a href="{{ obj.get_absolute_url }}" class="">{{ obj.name }}{# / <span style="font-size:12px;">吸特乐回来了(台) / 元首在现代</span>#}</a>#}
+{#                                        <p class="pl">{{ obj.info | striptags}}</p>#}
+{#                                        <div class="star clearfix">#}
+{#                                            <span class="allstar40"></span><span class="rating_nums">{{ obj.rating }}</span><span class="pl">(分)</span>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{#                                </td>#}
+{#                            </tr>#}
+{#                        </table>#}
+{#                        <p class="ul first"></p>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{##}
+{#                {% include "pagination.html" %}#}
+{#                <p class="ul first"></p>#}
+{#                <table width="100%" class="item2" style="margin-bottom: 3px">#}
+{#                    <tr class="">#}
+{#                        <td width="100" valign="top">#}
+{#                            <a class="nbg" href="https://movie.douban.com/subject/26585014/" title="希特勒回来了">#}
+{#                                <img src="https://img1.doubanio.com/view/movie_poster_cover/ipst/public/p2329535697.jpg"#}
+{#                                     alt="希特勒回来了" class="">#}
+{#                            </a>#}
+{#                        </td>#}
+{##}
+{#                        <td valign="top">#}
+{##}
+{##}
+{#                            <div class="pl2">#}
+{##}
+{#                                <a href="https://movie.douban.com/subject/26585014/" class="">#}
+{#                                    希特勒回来了#}
+{#                                    / <span style="font-size:12px;">吸特乐回来了(台) / 元首在现代</span>#}
+{#                                </a>#}
+{##}
+{##}
+{#                                <p class="pl">2015-10-08(德国) / 奥利弗·马祖奇 / 费比安·巴什 / 克里斯托弗·玛利亚·赫斯特 / 卡嘉·瑞曼 / 拉尔斯·鲁道夫 /#}
+{#                                    迈克尔·凯斯勒 /#}
+{#                                    罗伯特·布兰科 / 史蒂芬·格罗斯曼 / 妮娜·普罗尔 / 加德伦·利特 / 德国 /#}
+{#                                    www.constantin-film.de/kino/er-ist-wieder-da/...</p>#}
+{##}
+{##}
+{#                                <div class="star clearfix">#}
+{#                                    <span class="allstar40"></span>#}
+{#                                    <span class="rating_nums">8.1</span>#}
+{##}
+{##}
+{#                                    <span class="pl">(9042人评价)</span>#}
+{#                                </div>#}
+{##}
+{##}
+{#                            </div>#}
+{##}
+{#                        </td>#}
+{#                    </tr>#}
+{#                </table>#}
+{#                <p class="ul first"></p>#}
+{#            </div>#}
+{##}
+{#            <div class="aside clearfix"></div>#}
+{#        </div>#}
+{##}
+{##}
+{##}
+{##}
+{#    </div>#}
+{% endblock %}

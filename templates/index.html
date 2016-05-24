@@ -1,212 +1,201 @@
 {% extends "base.html" %}
 {% block main %}
-    <div class="header">
-        <div class="container">
-        <span class="pull-left">
-            官方BT----最好的BT下载平台
-        </span>
-        <span class="pull-right">
-            bt知识
-        </span>
-        </div>
-    </div>
 
-    <div class="nav-movie">
-        <div class="container">
-            <div class="nav-item">
-                <ul class="list-unstyled list-inline">
-                    <li><a href="">电影</a></li>
-                    <li><a href="">电影</a></li>
-                    <li><a href="">电影</a></li>
-                </ul>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row" id="movie" style="margin-bottom: 20px">
+                {% with hot_movie as hot %}
+                    {% include "macro/pic-item.html" %}
+                {% endwith %}
+            </div>
+
+            <div class="row" id="tv">
+                {% with hot_tv as hot %}
+                    {% include "macro/pic-item.html" %}
+                {% endwith %}
             </div>
         </div>
+        <div class="col-md-3">asdfasdf</div>
     </div>
 
-    <div class="container clearfix">
-        <div class="item-main clearfix">
-            <div class="article">
-                <div class="">
-                    <div class="page-header">
-                        <h3>热门电影 <small class="">更多>></small></h3>
-                    </div>
-                    <div class="items">
-                        {% for movie in last_show_movie %}
-                            <a class="item" target="_blank" href="{{ movie.get_absolute_url }}">
-                                <div class="cover-wp" data-isnew="false" data-id="{{ movie.douban_id }}">
-                                    <img src="{{ movie.image }}"
-                                         alt="{{ movie.name }}?imageView2/2/w/140/h/200/interlace/0/q/100"
-                                         data-x="2100" data-y="3000" onload="loadImg(this)"
-                                         style="width: 100%; opacity: 1;">
-                                </div>
-                                {% load index_tag %}
-                                <p>{{ movie.name|name_tag }}<strong>{{ movie.rating }}</strong></p>
-
-                            </a>
-                        {% endfor %}
-                    </div>
-                </div>
-
-            </div>
-            <div class="aside pull-right">
-                asdfasdfsad
-            </div>
-        </div>
-
-    </div>
-
-
-
+    {#    <div class="nav-movie">#}
+    {#        <div class="container">#}
+    {#            <div class="nav-item">#}
+    {#                <ul class="list-unstyled list-inline">#}
+    {#                    <li><a href="">电影</a></li>#}
+    {#                    <li><a href="">电影</a></li>#}
+    {#                    <li><a href="">电影</a></li>#}
+    {#                </ul>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+{#    <div class="container clearfix">#}
+{#        <div class="item-main clearfix">#}
+{#            <div class="article">#}
+                {# 热门分类，电视剧，电影 #}
+{#                {% with hot_movie as hot %}#}
+{#                    {% include "hot.html" %}#}
+{#                {% endwith %}#}
+{#                {% with hot_tv as hot %}#}
+{#                    {% include "hot.html" %}#}
+{#                {% endwith %}#}
+{#            </div>#}
+{#            <div class="aside pull-right">#}
+{#                asdfasdfsad#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#    </div>#}
     {#    item1    #}
-    <div class="container ">
-
-        {% for movie in last_movie %}
-            {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}<br>
-        {% endfor %}
-
-        {% for movie in last_show_movie %}
-            {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}----{{ movie.id }}<br>
-        {% endfor %}
-
-        <a class="item" target="_blank" href="https://movie.douban.com/subject/26585014/?tag=热门&amp;from=gaia">
-            <div class="cover-wp" data-isnew="false" data-id="26585014">
-                <img src="https://img1.doubanio.com/view/movie_poster_coWver/lpst/public/p2329535697.jpg" alt="希特勒回来了"
-                     data-x="2100" data-y="3000" onload="loadImg(this)" style="width: 100%; opacity: 1;">
-            </div>
-            <p>希特勒回来了<strong>8.2</strong></p>
-
-        </a>
-    </div>
-
-
+{#    <div class="container ">#}
+{##}
+{#        {% for movie in last_movie %}#}
+{#            {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}<br>#}
+{#        {% endfor %}#}
+{##}
+{#        {% for movie in last_show_movie %}#}
+{#            {{ movie.name }} ---{{ movie.year }}--{{ movie.douban_id }}----{{ movie.id }}<br>#}
+{#        {% endfor %}#}
+{##}
+{#        <a class="item" target="_blank" href="https://movie.douban.com/subject/26585014/?tag=热门&amp;from=gaia">#}
+{#            <div class="cover-wp" data-isnew="false" data-id="26585014">#}
+{#                <img src="https://img1.doubanio.com/view/movie_poster_coWver/lpst/public/p2329535697.jpg" alt="希特勒回来了"#}
+{#                     data-x="2100" data-y="3000" onload="loadImg(this)" style="width: 100%; opacity: 1;">#}
+{#            </div>#}
+{#            <p>希特勒回来了<strong>8.2</strong></p>#}
+{##}
+{#        </a>#}
+{#    </div>#}
+{##}
+{##}
     {# item2   #}
-
-    <div class="container" style="width: 590px">
-        <p class="ul first"></p>
-        <table width="100%" class="" style="margin-bottom: 3px">
-            <tbody>
-            <tr class="item2">
-                <td width="100" valign="top">
-
-
-                    <a class="nbg" href="https://movie.douban.com/subject/26585014/" title="希特勒回来了">
-                        <img src="https://img1.doubanio.com/view/movie_poster_cover/ipst/public/p2329535697.jpg"
-                             alt="希特勒回来了" class="">
-                    </a>
-                </td>
-
-                <td valign="top">
-
-
-                    <div class="pl2">
-
-                        <a href="https://movie.douban.com/subject/26585014/" class="">
-                            希特勒回来了
-                            / <span style="font-size:12px;">吸特乐回来了(台) / 元首在现代</span>
-                        </a>
-
-
-                        <p class="pl">2015-10-08(德国) / 奥利弗·马祖奇 / 费比安·巴什 / 克里斯托弗·玛利亚·赫斯特 / 卡嘉·瑞曼 / 拉尔斯·鲁道夫 / 迈克尔·凯斯勒 /
-                            罗伯特·布兰科 / 史蒂芬·格罗斯曼 / 妮娜·普罗尔 / 加德伦·利特 / 德国 /
-                            www.constantin-film.de/kino/er-ist-wieder-da/...</p>
-
-
-                        <div class="star clearfix">
-                            <span class="allstar40"></span>
-                            <span class="rating_nums">8.1</span>
-
-
-                            <span class="pl">(9042人评价)</span>
-                        </div>
-
-
-                    </div>
-
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <p class="ul first"></p>
-    </div>
-{#    {% include "m-top.html" %}#}
+{##}
+{#    <div class="container" style="width: 590px">#}
+{#        <p class="ul first"></p>#}
+{#        <table width="100%" class="" style="margin-bottom: 3px">#}
+{#            <tbody>#}
+{#            <tr class="item2">#}
+{#                <td width="100" valign="top">#}
+{##}
+{##}
+{#                    <a class="nbg" href="https://movie.douban.com/subject/26585014/" title="希特勒回来了">#}
+{#                        <img src="https://img1.doubanio.com/view/movie_poster_cover/ipst/public/p2329535697.jpg"#}
+{#                             alt="希特勒回来了" class="">#}
+{#                    </a>#}
+{#                </td>#}
+{##}
+{#                <td valign="top">#}
+{##}
+{##}
+{#                    <div class="pl2">#}
+{##}
+{#                        <a href="https://movie.douban.com/subject/26585014/" class="">#}
+{#                            希特勒回来了#}
+{#                            / <span style="font-size:12px;">吸特乐回来了(台) / 元首在现代</span>#}
+{#                        </a>#}
+{##}
+{##}
+{#                        <p class="pl">2015-10-08(德国) / 奥利弗·马祖奇 / 费比安·巴什 / 克里斯托弗·玛利亚·赫斯特 / 卡嘉·瑞曼 / 拉尔斯·鲁道夫 / 迈克尔·凯斯勒 /#}
+{#                            罗伯特·布兰科 / 史蒂芬·格罗斯曼 / 妮娜·普罗尔 / 加德伦·利特 / 德国 /#}
+{#                            www.constantin-film.de/kino/er-ist-wieder-da/...</p>#}
+{##}
+{##}
+{#                        <div class="star clearfix">#}
+{#                            <span class="allstar40"></span>#}
+{#                            <span class="rating_nums">8.1</span>#}
+{##}
+{##}
+{#                            <span class="pl">(9042人评价)</span>#}
+{#                        </div>#}
+{##}
+{##}
+{#                    </div>#}
+{##}
+{#                </td>#}
+{#            </tr>#}
+{#            </tbody>#}
+{#        </table>#}
+{#        <p class="ul first"></p>#}
+{#    </div>#}
+    {#    {% include "m-top.html" %}#}
     {#nav#}
-    <div class="container">
-        <ul class="nav nav-pills">
-            <li role="presentation" class="active"><a href="#">Home</a></li>
-            <li role="presentation"><a href="#">Profile</a></li>
-            <li role="presentation"><a href="#">Messages</a></li>
-        </ul>
-
-
-        <div class="mm-wrapper">
-            <div class="mm">
-
-                <ul>
-                    <li data-note="1" class="on" id="longlong-channel-home"><a href="#" target="_self"
-                                                                               class="tab-item home">我的主页</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-news"><a href="http://sh.qihoo.com/" class="tab-item news">新闻头条</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-tv"><a href="http://v.360.cn/dianshi/index.html" class="tab-item tv">电 视
-                        剧</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-movie"><a href="http://v.360.cn/dianying/index.html"
-                                                       class="tab-item movie">最新电影</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-game"><a href="http://xiaoyouxi.360.cn/" class="tab-item game">小 游 戏</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-novel"><a href="http://xiaoshuo.360.cn/" class="tab-item novel">小说大全</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-travel"><a href="http://go.360.cn/holiday" class="tab-item travel">旅游度假</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-mall"><a href="http://mall.360.cn/?fname=hao_top_mall&amp;eee=hao_top_mall"
-                                                      class="tab-item mall">品牌特卖</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                    <li id="longlong-channel-tuan"><a href="http://tuan.360.cn/?fname=hao_top_tuan&amp;eee=hao_top_tuan"
-                                                      class="tab-item tuan">今日团购</a>
-                        <ins class="hover-bg"></ins>
-                        <ins class="default-bg"></ins>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-
-
-    </div>
+{#    <div class="container">#}
+{#        <ul class="nav nav-pills">#}
+{#            <li role="presentation" class="active"><a href="#">Home</a></li>#}
+{#            <li role="presentation"><a href="#">Profile</a></li>#}
+{#            <li role="presentation"><a href="#">Messages</a></li>#}
+{#        </ul>#}
+{##}
+{##}
+{#        <div class="mm-wrapper">#}
+{#            <div class="mm">#}
+{##}
+{#                <ul>#}
+{#                    <li data-note="1" class="on" id="longlong-channel-home"><a href="#" target="_self"#}
+{#                                                                               class="tab-item home">我的主页</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-news"><a href="http://sh.qihoo.com/" class="tab-item news">新闻头条</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-tv"><a href="http://v.360.cn/dianshi/index.html" class="tab-item tv">电 视#}
+{#                        剧</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-movie"><a href="http://v.360.cn/dianying/index.html"#}
+{#                                                       class="tab-item movie">最新电影</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-game"><a href="http://xiaoyouxi.360.cn/" class="tab-item game">小 游 戏</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-novel"><a href="http://xiaoshuo.360.cn/" class="tab-item novel">小说大全</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-travel"><a href="http://go.360.cn/holiday" class="tab-item travel">旅游度假</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-mall"><a href="http://mall.360.cn/?fname=hao_top_mall&amp;eee=hao_top_mall"#}
+{#                                                      class="tab-item mall">品牌特卖</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                    <li id="longlong-channel-tuan"><a href="http://tuan.360.cn/?fname=hao_top_tuan&amp;eee=hao_top_tuan"#}
+{#                                                      class="tab-item tuan">今日团购</a>#}
+{#                        <ins class="hover-bg"></ins>#}
+{#                        <ins class="default-bg"></ins>#}
+{#                    </li>#}
+{#                </ul>#}
+{#            </div>#}
+{##}
+{#        </div>#}
+{##}
+{##}
+{#    </div>#}
     {#navend#}
-    <div class="m-main">
-        <div class="container">
-
-            <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Library</a></li>
-                <li class="active">Data</li>
-            </ol>
-
-            <div class="panel panel-default panel-list">
-                <div class="panel-heading">Panel heading without title</div>
-                <div class="panel-body">
-                    <i class="fa fa-camera-retro" style="color: #c62c30;"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+{#    <div class="m-main">#}
+{#        <div class="container">#}
+{##}
+{#            <ol class="breadcrumb">#}
+{#                <li><a href="#">Home</a></li>#}
+{#                <li><a href="#">Library</a></li>#}
+{#                <li class="active">Data</li>#}
+{#            </ol>#}
+{##}
+{#            <div class="panel panel-default panel-list">#}
+{#                <div class="panel-heading">Panel heading without title</div>#}
+{#                <div class="panel-body">#}
+{#                    <i class="fa fa-camera-retro" style="color: #c62c30;"></i>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 
 {% endblock %}
