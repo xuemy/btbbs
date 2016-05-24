@@ -1,0 +1,75 @@
+.item-main {
+  display: block;
+}
+.item-main .article {
+  width: 645px;
+  float: left;
+  padding-right: 40px;
+}
+.item-main .aside {
+  width: 310px;
+}
+.items a {
+  text-decoration: none;
+}
+.item {
+  display: block;
+  float: left;
+  color: #37a;
+  font-size: 13px;
+  text-align: center;
+  margin: 0 11.25px 10px 0;
+  width: 140px;
+  text-decoration: none;
+}
+.item .cover-wp {
+  background-size: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+.item .cover-wp img {
+  border-width: 0;
+  vertical-align: middle;
+}
+.item p {
+  margin: 5px 0 0;
+  height: 44px;
+  overflow: hidden;
+}
+.item strong {
+  color: #e09015;
+  margin-left: 5px;
+}
+table {
+  border-collapse: collapse;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+table tr {
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
+}
+table td {
+  font: 12px Helvetica, Arial, sans-serif;
+  line-height: 1.62;
+}
+.item2 a {
+  text-decoration: none;
+}
+.item2 .pl2 {
+  font: 14px Arial, Helvetica, sans-serif;
+  line-height: 150%;
+  color: #666666;
+}
+.item2 .pl {
+  font: 12px Arial, Helvetica, sans-serif;
+  line-height: 150%;
+  color: #666666;
+}
+.ul {
+  border-bottom: 1px dashed #DDDDDD;
+  line-height: 100%;
+  clear: both;
+}
