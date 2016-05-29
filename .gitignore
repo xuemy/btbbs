@@ -3,6 +3,7 @@
 Vagrantfile
 ERROR.log
 *.temp
+*.pyc
 /SELECT_t___FROM_public_bbs_torrent_t_t.csv
 .idea/
 SELECT_t___FROM_public_bbs_torrent_t_t.csv
@@ -76,3 +77,5 @@ btbbs/settings.pyc
 btbbs/urls.pyc
 btbbs/wsgi.pyc
 init_db.pyc
+bbs/search.pyc
+bbs/views.pyc
