@@ -6,8 +6,6 @@ import string
 from qiniu import Auth, put_data
 from qiniu.utils import etag_stream
 
-from bbs.models import Movie
-
 FILM_SUFFIX = [
     # windows 媒体
     '.asf', '.avi', '.wm', '.wmp', '.wmv',

@@ -1,9 +1,17 @@
 # encoding:utf-8
+from __future__ import unicode_literals
 
+import json
+import re
+
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import permalink
+from taggit.managers import TaggableManager
 
 # Create your models here.
+from bbs.utils import humanbytes
+
 '''
 year 年代
 type 类型
@@ -14,11 +22,14 @@ detail_format = '''
                     <p class='original_title'>原名:{original_title}</p>
                     <p class='aka'>又名:{aka}</p>
                     <p class='cast'>主演:{cast}</p>
-                    <p class='director'>导演:{director}</p>
-                    <p class='writer>编剧:{writer}</p>
                     <p class='type'>类型:</p>
                     <p class='year'>年代:</p>
                     <p class='area'>地区:</p>
+                    <p class='area'>片长:</p>
+                    <p class='area'>上映时间:</p>
+                    <p class='area'>语言:</p>
+                    <p class='director'>导演:{director}</p>
+                    <p class='writer>编剧:{writer}</p>
 <p>
 ◎译　　名　星球大战7：原力觉醒/星球大：原力觉醒/星际大战七部曲：原力觉醒(台)<br>
 ◎片　　名　Star Wars: The Force Awakens<br>
@@ -57,106 +68,76 @@ detail_format = '''
 <p>◎简　　介</p>
 <p></p>
 '''
-
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=200, db_index=True, unique=True)
-    parent = models.ForeignKey('self', models.SET_NULL,blank=True,null=True,related_name='sons')
-
-# @receiver(post_migrate)
-# def init_category(sender, **kwargs):
-#     init_ = ['电影', '电视剧', '综艺', '音乐', '图书', '软件']
-#     Category.objects.bulk_create([Category(name=x) for x in init_])
-
-
-
-class Torrent_b(models.Model):
-    name = models.CharField(max_length=255)
-    hash = models.CharField(max_length=40, db_index=True, unique=True)
-    etag = models.CharField(max_length=40, unique=True)
-    path = models.CharField(max_length=255)
-    detail = models.TextField(verbose_name='文件主要内容', default='', null=True)
-    ctime = models.DateTimeField(auto_now_add=True)
-    views = models.IntegerField(default=0)
-
-    def __unicode__(self):
-        return self.name
-
-    @permalink
-    def get_absolute_url(self):
-        return ('download',(),{
-            # 'tid': self.movie_set.,
-        })
-
-class Tags(models.Model):
-    name = models.CharField(max_length=255, db_index=True)
-
-    def __unicode__(self):
-        return self.name
-
-    @permalink
-    def get_absolute_url(self):
-        return ('tag', (), {
-            'tag_name': self.name,
-        })
-class Torrent(models.Model):
-    name = models.CharField(max_length=255)
-    hash = models.CharField(max_length=40, db_index=True, unique=True)
-    etag = models.CharField(max_length=40, unique=True)
-    path = models.CharField(max_length=255)
-    detail = models.TextField(verbose_name='文件主要内容', default='', null=True)
-    ctime = models.DateTimeField(auto_now_add=True)
-    views = models.IntegerField(default=0)
-    movie = models.ForeignKey('Movie', on_delete=models.CASCADE)
-
-    def __unicode__(self):
-        return self.name
-    class Meta:
-        index_together = [
-            ['id','etag']
-        ]
-
-    @permalink
-    def get_absolute_url(self):
-        return ('download',(),{
-            'tid': self.movie_id,
-        })
-
-
 class Movie(models.Model):
+
+    douban_id = models.IntegerField(unique=True)
+    subtype = models.CharField(max_length=5, db_index=True, blank=True, choices=[('movie', '电影'),('tv', '电视剧')], verbose_name='分类', default='movie')
     name = models.CharField(max_length=255)
-    year = models.IntegerField(db_index=True, default=0, null=True)
-    rating = models.FloatField(db_index=True, default=0.0, null=True)
-    views = models.IntegerField(default=0)
-    image = models.CharField(max_length=255,blank=True,null=True)
-    show_time =  models.DateField(null=True)
-    ctime = models.DateTimeField(auto_now_add=True)
-    utime = models.DateTimeField(auto_now=True)
-    summary = models.TextField(null=True, blank=True)
-    info = models.TextField(null=True, blank=True)
-    intro = models.OneToOneField('Movie_intro', on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tags)
-    # torrent = models.ManyToManyField(Torrent)
-    douban_id = models.IntegerField(null=True, db_index=True)
-    category = models.ForeignKey(Category, null=True)
-    # subcategory = models.ManyToManyField(Category)
+    original_title = models.CharField(max_length=255, blank=True, null=True)
+    image = models.URLField(null=True, verbose_name='海报图')
+    year = models.IntegerField(db_index=True, default=0, null=True, verbose_name='年代')
+    rating = models.FloatField(db_index=True, default=0.0, null=True, verbose_name='豆瓣评分')
+    summary = models.TextField(blank=True, verbose_name='简介')
+
+    pubdate = models.DateField(null=True, verbose_name='上映时间')
+    intro = models.TextField(blank=True)
+
+    views = models.IntegerField(default=1)
+
+    tags = TaggableManager()
+
+    genres = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='类型')
+    language = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='语言', default=[])
+    aka = ArrayField(models.CharField(max_length=255),  null=True, verbose_name='又名')
+    countries = ArrayField(models.CharField(max_length=50), null=True, db_index=True, verbose_name='国家/地区')
+    casts = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='主演')
+    directors = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='导演')
+    writer = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='编剧')
+    movie_duration = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='片长')
 
     def __unicode__(self):
         return self.name
 
-    class Meta:
-        index_together = [
-
-        ]
-
-        ordering = ['-year', '-ctime']
-        
     @permalink
     def get_absolute_url(self):
         return ('detail', (), {
             'pk': self.id,
         })
-class Movie_intro(models.Model):
-    intro = models.TextField(null=True, default="")
-    # movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+
+    @property
+    def get_image(self):
+        return 'http://img.store.sogou.com/net/a/04/link?appid=100140019&url={}'.format(self.image)
+
+    def get_torrents(self):
+        torrents = self.torrent_t_set.all()
+        regex = re.compile(r'(720p|1080p)',re.I)
+        res = []
+        for torrent in torrents:
+            m = regex.search(torrent.name)
+            if m:
+                x = m.group()
+            else:
+                x = '高清'
+            count = sum([d['size'] for d in json.loads(torrent.detail)])
+            name = '【{}】.{}/{}.{}.torrent'.format(x,self.name,self.original_title,humanbytes(count))
+            res.append(
+                (name, torrent.id, torrent.etag, torrent.info_hash)
+            )
+        return res
+
+
+    def info(self):
+        pass
+class Torrent(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    etag = models.CharField(max_length=40, unique=True)
+    info_hash = models.CharField(max_length=40, unique=True)
+    f = models.FileField()
+    detail = models.TextField(null=True)
+    views = models.IntegerField(default=1)
+
+    def __unicode__(self):
+        return self.name
+
+
