@@ -21,13 +21,13 @@ sitemaps = {
 }
 
 urlpatterns = [
-    url(r'^$', views.index , name='index'),
+    url(r'^$', views.Index.as_view() , name='index'),
 
-    url(r'^detail/(?P<pk>\d+).html$', views.Detail.as_view(), name='detail'),
+    url(r'^detail/(?P<douban_id>\d+).html$', views.Detail.as_view(), name='detail'),
 
     url(r'^download/(?P<tid>\d+)$', views.download, name='download'),
 
-    url(r'^tag/(?P<tag_name>.+)$', views.Tag.as_view(), name='tag'),
+    url(r'^t/(?P<tag_name>.+)$', views.Tag.as_view(), name='tag'),
 
     # url(r'^genre/(?P<genre>.+)$', views.Genre.as_view(), name='genre'),
 

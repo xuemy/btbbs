@@ -16,7 +16,7 @@ from django.db import connections, connection
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "btbbs.settings")
 django.setup()
-from bbs.models import Movie_T, T_Storage, Torrent_T
+from bbs.models import Movie
 from init_db import add_intro, getLoger
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')
@@ -131,7 +131,7 @@ def move_data_to_postgresql():
     pool = ThreadPool(4)
     def func(x_obj):
         douban_id = x_obj['id']
-        queryset = Movie_T.objects.filter(douban_id=douban_id)
+        queryset = Movie.objects.filter(douban_id=douban_id)
         if not queryset.exists():
             log.info('开始处理数据{}'.format(douban_id))
             y_obj = y.find_one({'douban_id': douban_id})
@@ -157,7 +157,7 @@ def move_data_to_postgresql():
             tags = x_dict.pop('tags')
 
 
-            mt = Movie_T(**x_dict)
+            mt = Movie(**x_dict)
             mt.save()
             mt.tags.add(*tags)
             log.info('成功保存数据{}-{}'.format(douban_id, x_dict['name']))
@@ -166,7 +166,7 @@ def move_data_to_postgresql():
     # pool.join()
     for x_obj in x.find():
         douban_id = x_obj['id']
-        queryset = Movie_T.objects.filter(douban_id=douban_id)
+        queryset = Movie.objects.filter(douban_id=douban_id)
         if not queryset.exists():
             log.info('开始处理数据{}'.format(douban_id))
             y_obj = y.find_one({'douban_id': douban_id})
@@ -192,20 +192,15 @@ def move_data_to_postgresql():
             tags = x_dict.pop('tags')
 
 
-            mt = Movie_T(**x_dict)
+            mt = Movie(**x_dict)
             mt.save()
             mt.tags.add(*tags)
             log.info('成功保存数据{}-{}'.format(douban_id, x_dict['name']))
         else:
             log.info('数据存在{}'.format(douban_id))
 
-def test_storage():
-    content = ContentFile('这是一个测试sadfasdf   ', 'three6.txt')
-    t = T_Storage()
-    t.f = content
-    t.save()
 
-def move_torrent_to_movie():
+def move_Torrento_movie():
     torrent_cursor = connections['torrent'].cursor()
     movie_cursor = connection.cursor()
     torrent_cursor.execute('select * from torrent_info')
@@ -216,13 +211,13 @@ def move_torrent_to_movie():
         res_dict = dict(zip(description, r))
         if not res_dict['etag'] or not res_dict['info_hash'] or not res_dict['key']:
             return
-        query = Torrent_T.objects.filter(info_hash=res_dict['info_hash'])
+        query = Torrent.objects.filter(info_hash=res_dict['info_hash'])
         if query.exists():
             return
         else:
-            m = Movie_T.objects.filter(douban_id=res_dict['douban_id']).first()
+            m = Movie.objects.filter(douban_id=res_dict['douban_id']).first()
             if m:
-                movie_cursor.execute("insert into bbs_torrent_t (name, etag, info_hash, f, movie_id, detail) VALUES (%s,%s,%s,%s,%s,%s)",[
+                movie_cursor.execute("insert into bbs_Torrent (name, etag, info_hash, f, movie_id, detail) VALUES (%s,%s,%s,%s,%s,%s)",[
                     res_dict['name'],
                     res_dict['etag'],
                     res_dict['info_hash'],
@@ -237,21 +232,30 @@ def move_torrent_to_movie():
     # pool.map(f, res)
     # pool.join()
     # pool.close()
-def remove_error_torrent():
-    torrents = Torrent_T.objects.all()
-    def remove(torrent):
-        try:
-            json.loads(torrent.detail)
-        except:
-            torrent.delete()
-    map(remove, torrents)
+# def remove_error_torrent():
+#     torrents = Torrent.objects.all()
+#     def remove(torrent):
+#         try:
+#             json.loads(torrent.detail)
+#         except:
+#             torrent.delete()
+#     map(remove, torrents)
+
+def move_tags():
+    for y_obj in y.find():
+        douban_id = y_obj['douban_id']
+        queryset = Movie.objects.filter(douban_id=douban_id)
+        if queryset.exists():
+            m = queryset.first()
+            y_dict = parse_y(y_obj)
+            m.tags.add(*y_dict['tags'])
 
 if __name__ == '__main__':
     # print parse_x(x.find_one())
     # test_genres()
     # print y.find_one({'douban_id':'53272688'})
     # move_data_to_postgresql()
-    # t = Movie_T.objects.filter(genres__contains=['动作']).all()
+    # t = Movie.objects.filter(genres__contains=['动作']).all()
     # print t
     # test_storage()
     # f = default_storage.open('three.txt')
@@ -260,8 +264,8 @@ if __name__ == '__main__':
     # print t.f.url
     # print t.f.read()
 
-    # move_torrent_to_movie()
-    # isnull = Movie_T.objects.filter(torrent_t__isnull=True).all()
+    # move_Torrento_movie()
+    # isnull = Movie.objects.filter(Torrent__isnull=True).all()
     # for i in isnull:
     #     print i.name
-    remove_error_torrent()
+    move_tags()

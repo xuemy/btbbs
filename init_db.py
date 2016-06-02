@@ -13,7 +13,7 @@ from slugify import slugify
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "btbbs.settings")
 django.setup()
-from bbs.models import Movie, Category
+from bbs.models import Movie
 import pymongo
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')

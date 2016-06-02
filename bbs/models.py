@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 import re
+import string
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -12,61 +13,19 @@ from taggit.managers import TaggableManager
 # Create your models here.
 from bbs.utils import humanbytes
 
-'''
-year 年代
-type 类型
-area 地区
-'''
-
 detail_format = '''
-                    <p class='original_title'>原名:{original_title}</p>
-                    <p class='aka'>又名:{aka}</p>
-                    <p class='cast'>主演:{cast}</p>
-                    <p class='type'>类型:</p>
-                    <p class='year'>年代:</p>
-                    <p class='area'>地区:</p>
-                    <p class='area'>片长:</p>
-                    <p class='area'>上映时间:</p>
-                    <p class='area'>语言:</p>
-                    <p class='director'>导演:{director}</p>
-                    <p class='writer>编剧:{writer}</p>
-<p>
-◎译　　名　星球大战7：原力觉醒/星球大：原力觉醒/星际大战七部曲：原力觉醒(台)<br>
-◎片　　名　Star Wars: The Force Awakens<br>
-◎年　　代　2015<br>
-◎国　　家　美国<br>
-◎类　　别　动作/科幻/奇幻/冒险<br>
-◎语　　言　英语<br>
-◎字　　幕　中英双字<br>
-◎上映日期　2015-12-18(美国)/2016-01-09(中国大陆)<br>
-◎IMDb评分  8.4/10 from 459,518 users<br>
-◎豆瓣评分　7.2/10 from 94,122 users<br>
-◎片　　长　135分钟<br>
-◎导　　演　J·J·艾布拉姆斯 J.J. Abrams<br>
-◎主　　演　黛西·雷德利 Daisy Ridley
-　　　　　　约翰·博耶加 John Boyega
-　　　　　　哈里森·福特 Harrison Ford
-　　　　　　多姆纳尔·格里森 Domhnall Gleeson
-　　　　　　亚当·德利弗 Adam Driver
-　　　　　　马克·哈米尔 Mark Hamill
-　　　　　　凯丽·费雪 Carrie Fisher
-　　　　　　奥斯卡·伊萨克 Oscar Isaac
-　　　　　　露皮塔·尼永奥 Lupita Nyong'o
-　　　　　　安迪·瑟金斯 Andy Serkis
-　　　　　　安东尼·丹尼尔斯 Anthony Daniels
-　　　　　　彼德·梅犹 Peter Mayhew
-　　　　　　马克斯·冯·叙多 Max von Sydow
-　　　　　　比利·迪·威廉姆斯 Billy Dee Williams
-　　　　　　爱德华·斯皮伊尔斯 Ed Speleers
-　　　　　　马修·詹姆斯·托马斯 Matthew James Thomas
-　　　　　　肯尼·贝克 Kenny Baker
-　　　　　　格温多兰·克里斯蒂 Gwendoline Christie
-　　　　　　西蒙·佩吉 Simon Pegg
-　　　　　　克里斯塔·克拉克 Crystal Clarke
-　　　　　　匹普·安德森 Pip Andersen
-</p>
-<p>◎简　　介</p>
-<p></p>
+<p>◎译　　名 :星球大战7：原力觉醒/星球大：原力觉醒/星际大战七部曲：原力觉醒(台)</p>
+<p>◎片　　名 :Star Wars: The Force Awakens</p>
+<p>◎年　　代 :2015</p>
+<p>◎国　　家 :美国</p>
+<p>◎类　　别 :动作/科幻/奇幻/冒险</p>
+<p>◎语　　言 :英语</p>
+<p>◎字　　幕 :中英双字</p>
+<p>◎上映日期 :2015-12-18(美国)/2016-01-09(中国大陆)</p>
+<p>◎豆瓣评分 :7.2/10 from 94,122 users</p>
+<p>◎片　　长 :135分钟</p>
+<p>◎导　　演 :J·J·艾布拉姆斯 J.J. Abrams</p>
+<p>◎主　　演 :</p>
 '''
 class Movie(models.Model):
 
@@ -79,7 +38,7 @@ class Movie(models.Model):
     rating = models.FloatField(db_index=True, default=0.0, null=True, verbose_name='豆瓣评分')
     summary = models.TextField(blank=True, verbose_name='简介')
 
-    pubdate = models.DateField(null=True, verbose_name='上映时间')
+    pubdate = models.DateField(null=True, verbose_name='上映时间', db_index=True)
     intro = models.TextField(blank=True)
 
     views = models.IntegerField(default=1)
@@ -95,39 +54,71 @@ class Movie(models.Model):
     writer = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='编剧')
     movie_duration = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='片长')
 
+    _torrent_type = None
+    _torrents = None
+
     def __unicode__(self):
         return self.name
+
 
     @permalink
     def get_absolute_url(self):
         return ('detail', (), {
-            'pk': self.id,
+            'douban_id': self.douban_id,
         })
 
+    @property
+    def get_name(self):
+        return '{name}/<small>{original_title}</small> [{year}] [{country}] [{genres}] [中文字幕] [{torrent_type}]'.format(
+            name=self.name,
+            original_title=self.original_title,
+            year=self.year,
+            country='/'.join(self.countries),
+            genres='/'.join(self.genres),
+            torrent_type = '/'.join(self.get_torrent_type)
+        )
     @property
     def get_image(self):
         return 'http://img.store.sogou.com/net/a/04/link?appid=100140019&url={}'.format(self.image)
 
     def get_torrents(self):
-        torrents = self.torrent_t_set.all()
-        regex = re.compile(r'(720p|1080p)',re.I)
-        res = []
-        for torrent in torrents:
-            m = regex.search(torrent.name)
-            if m:
-                x = m.group()
-            else:
-                x = '高清'
-            count = sum([d['size'] for d in json.loads(torrent.detail)])
-            name = '【{}】.{}/{}.{}.torrent'.format(x,self.name,self.original_title,humanbytes(count))
-            res.append(
-                (name, torrent.id, torrent.etag, torrent.info_hash)
-            )
-        return res
+        if self._torrents is None:
+            torrents = self.torrent_set.all()
+            regex = re.compile(r'(720p|1080p)', re.I)
+            res = []
+            torrent_type = set()
+            for torrent in torrents:
+                m = regex.search(torrent.name)
+                if m:
+                    x = m.group()
+                else:
+                    x = '高清'
+                torrent_type.add(string.lower(x))
+                count = sum([d['size'] for d in json.loads(torrent.detail)])
+                name = '【{}】.{}/{}.{}.{}.torrent'.format(x,self.name,self.original_title,'/'.join(self.genres),humanbytes(count))
+                res.append(
+                    dict(name=name, id = torrent.id, etag =torrent.etag, info_hash=torrent.info_hash)
+                )
+            self._torrent_type = list(torrent_type)
+            self._torrents = res
+        return self._torrents
 
+    @property
+    def get_torrent_type(self):
+        if self._torrent_type is None:
+            self.get_torrents()
+        return self._torrent_type
 
-    def info(self):
-        pass
+    @classmethod
+    def add_view(cls):
+        cls.views += 1
+        cls.save()
+
+    @classmethod
+    def get_genres(self):
+        m = Movie.objects.raw('SELECT DISTINCT "unnest"(bbs_movie.genres) as genres from bbs_movie;',translations={"genres":'genres','id':'id'})
+        return m
+
 class Torrent(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -140,4 +131,25 @@ class Torrent(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        index_together = (
+            ['etag','info_hash', 'id'],
+        )
 
+
+    def get_magnet(self):
+        return 'magnet:?xt=urn:btih:{}'.format(self.info_hash)
+
+def dictfetchall(cursor):
+    "Returns all rows from a cursor as a dict"
+
+    desc = cursor.description
+    return [
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+    ]
+def raw_sql_get_genres():
+    from django.db import connection,transaction
+    cursor = connection.cursor()
+    cursor.execute('SELECT DISTINCT "unnest"(bbs_movie.genres) as genres from bbs_movie;')
+    return [row[0] for row in cursor.fetchall()]
