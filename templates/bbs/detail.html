@@ -1,5 +1,9 @@
 {% extends "bbs/base.html" %}
 
+{% block title %}{{ detail.name }}{{ detail.get_torrent_type|join:'|' }}BT种子磁力下载-{{ site.domain }}{% endblock %}
+{% block keyword %}
+    {{ detail.original_title }}|{{ detail.aka|join:'|' }}
+{% endblock %}
 {% block main %}
 <div class="detail">
     <div class="detail-t">
@@ -36,6 +40,9 @@
                             <img src="{{ detail.get_image }}" alt="">
                         </div>
                         <div class="info">
+                            <p style="font-size: 18px;">
+                                {{ detail.name }}
+                            </p>
                             <p>◎译　　名 :{{ detail.aka|join:'/' }}</p>
                             <p>◎片　　名 :{{ detail.original_title }}</p>
                             <p>◎年　　代 :{{ detail.year }}</p>

@@ -29,7 +29,7 @@ detail_format = '''
 '''
 class Movie(models.Model):
 
-    douban_id = models.IntegerField(unique=True)
+    douban_id = models.IntegerField(unique=True, db_index=True)
     subtype = models.CharField(max_length=5, db_index=True, blank=True, choices=[('movie', '电影'),('tv', '电视剧')], verbose_name='分类', default='movie')
     name = models.CharField(max_length=255)
     original_title = models.CharField(max_length=255, blank=True, null=True)
@@ -149,7 +149,7 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 def raw_sql_get_genres():
-    from django.db import connection,transaction
+    from django.db import connection
     cursor = connection.cursor()
     cursor.execute('SELECT DISTINCT "unnest"(bbs_movie.genres) as genres from bbs_movie;')
     return [row[0] for row in cursor.fetchall()]

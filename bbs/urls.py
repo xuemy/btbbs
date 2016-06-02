@@ -29,10 +29,11 @@ urlpatterns = [
 
     url(r'^t/(?P<tag_name>.+)$', views.Tag.as_view(), name='tag'),
 
+    url(r'^genres/(?P<name>.+)$', views.Genres.as_view(), name='genres'),
     # url(r'^genre/(?P<genre>.+)$', views.Genre.as_view(), name='genre'),
 
-    url(r'^data/(?P<data>(cast)|(writer)|(director)|(genre))/(?P<name>.+)$', views.Data.as_view(), name='data'),
-    # url(r'^(?P<category>(tv)|(movie))$', category.Category.as_view(), name='category'),
+    # url(r'^data/(?P<data>(cast)|(writer)|(director)|(genre)|(country))/(?P<name>.+)$', views.Data.as_view(), name='data'),
+    # url(r'^data/country/(?P<name>.+)$', views.DateCountry.as_view(), name='country'),
 
 
 

@@ -26,7 +26,7 @@
                     {#                            <li>本文件包含有{{ article.get_torrent_type|join:", " }}的下载链接</li>#}
                 </ul>
                 <h2 class="title">
-                    <a href="{{ article.get_absolute_url }}">{{ article.get_name|safe }}</a>
+                    <a href="{{ article.get_absolute_url }}" target="_blank">{{ article.get_name|safe }}</a>
                 </h2>
                 {% with article.tags.all as tags %}
                     {% include "bbs/taggit.html" %}

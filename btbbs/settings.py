@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
-
+    'django.contrib.sites',
 
     'taggit',
     'bbs',
@@ -128,6 +128,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
@@ -148,7 +149,7 @@ QINIU_BUCKET_DOMAIN = '7xqsqu.com1.z0.glb.clouddn.com'
 '''
 DEBUG = True
 
-SITE_NAME = ''
+SITE_NAME = 'bt2020.com'
 SITE_URL = ''
 SITE_DESCRIPTION = ''
 SITE_KEYWORDS = ''
