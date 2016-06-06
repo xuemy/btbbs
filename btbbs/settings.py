@@ -58,7 +58,7 @@ ROOT_URLCONF = 'btbbs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -135,9 +135,9 @@ SITE_ID = 1
 STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR,  "static")
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static"),
+# ]
 
 DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuStorage'
 QINIU_ACCESS_KEY ='jOCEgrOksRJIbggo-qp6dLujp3Vhjc7DzHmin3vs'

@@ -1,0 +1,9 @@
+.tag .article {
+  width: 645px;
+  float: left;
+  padding-right: 40px;
+}
+.tag .aside {
+  width: 310px;
+  float: left;
+}

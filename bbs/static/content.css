@@ -1,0 +1,28 @@
+.content h1 {
+  word-wrap: break-word;
+  display: block;
+  font-size: 25px;
+  font-weight: bold;
+  color: #494949;
+  margin: 0;
+  padding: 0 0 15px 0;
+  line-height: 1.1;
+}
+.content h1 span {
+  color: #888;
+}
+.content .article {
+  width: 600px;
+  padding: 5px;
+}
+.content .article .pic {
+  width: 150px;
+}
+.content .article .info {
+  width: 430px;
+  margin-left: 10px;
+}
+.content .intro-main {
+  width: 730px;
+  padding: 10px;
+}

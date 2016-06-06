@@ -1,0 +1,19 @@
+{% extends "bbs/base.html" %}
+{% block title %}
+
+{% endblock %}
+
+{% block keywords %}
+
+{% endblock %}
+
+{% block description %}
+
+{% endblock %}
+
+{% block main %}
+{% for genre in genres %}
+    <a href="{% url 'genres' name=genre %}">{{ genre }}</a>
+{% endfor %}
+
+{% endblock %}

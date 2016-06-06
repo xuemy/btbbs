@@ -1,0 +1,24 @@
+{% extends "bbs/base.html" %}
+
+{% block title %}
+{{ name }}电影|{{ name }}片-{{ site.name }}
+{% endblock %}
+
+
+{% block keywords %}
+最新{{ name }}电影|{{ name }}片下载,{{ name }}电影|{{ name }}片bt种子下载,高清{{ name }}电影|{{ name }}片,1080p{{ name }}电影|{{ name }}片,720p{{ name }}电影|{{ name }}片,{{ site.name }}
+{% endblock %}
+
+{% block description %}
+最新{{ name }}电影|{{ name }}片下载,{{ name }}电影|{{ name }}片bt种子下载,高清{{ name }}电影|{{ name }}片,1080p{{ name }}电影|{{ name }}片,720p{{ name }}电影|{{ name }}片
+{% endblock %}
+
+{% block main %}
+<div class="container">
+<div class="row">
+    <div class="col-md-9">
+        {% include "bbs/article-list.html" %}
+    </div>
+</div>
+</div>
+{% endblock %}

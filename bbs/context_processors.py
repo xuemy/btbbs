@@ -12,6 +12,21 @@ def setting(name, default=None):
 
 def site(request):
     return {
-        'site':Site.objects.get(id=settings.SITE_ID),
+        'site': Site.objects.get(id=settings.SITE_ID),
+        'default_genres': [
+            '动作',
+            '战争',
+            '爱情',
+            '奇幻',
+            '冒险',
+            '科幻',
+            '恐怖',
+            '记录',
+            '剧情',
+            '历史',
+            '武侠',
+            '灾难',
+            '悬疑',
+        ],
 
     }

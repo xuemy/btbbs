@@ -7,18 +7,26 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    {% spaceless %}<title>{% block title %}{% endblock %}</title>{% endspaceless %}
-    {% spaceless %}
-        <meta name="keywords" content="{% block keywords %}{% endblock %}">
-    {% endspaceless %}
-    {% spaceless %}<meta name="description" content="{% block description %}{% endblock %}">{% endspaceless %}
+    <title>{% spaceless %}{% block title %}{% endblock %}{% endspaceless %}</title>
+    <meta name="keywords" content="{% spaceless %}{% block keywords %}{% endblock %}{% endspaceless %}">
+    <meta name="description" content="{% spaceless %}{% block description %}{% endblock %}{% endspaceless %}">
     <meta name="viewport" content="width=device-width">
-
+    <link rel="shortcut icon" href="/static/bbs/logo.ico" />
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://apps.bdimg.com/libs/fontawesome/4.4.0/css/font-awesome.min.css">
     {% load staticfiles %}
     <link rel="stylesheet" href="/static/bbs/main.css">
     {#        <link rel="stylesheet" href="{% static 'main.css' %}">#}
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?13cefbc5d4a15806614a432c331dac5f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
     <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
 </head>
 <body>
@@ -48,11 +56,17 @@
                     <a><span class="split"></span></a>
                 </li>
 
-                <li class="nav-list-item nav-list-item2"><a href="">javsasdfas</a></li>
-                <li class="nav-list-item nav-list-item2"><a href="">javsasdfas</a></li>
-                <li class="nav-list-item nav-list-item2"><a href="">javsasdfas</a></li>
-                <li class="nav-list-item nav-list-item2"><a href="">javsasdfas</a></li>
-                <li class="nav-list-item nav-list-item2"><a href="">javsasdfas</a></li>
+                {% for genre in default_genres %}
+                    <li class="nav-list-item nav-list-item2"><a target="_blank" href="{% url 'genres' name=genre %}" title="{{ genre }}电影，{{ genre }}电影BT下载">{{ genre }}</a></li>
+                {% endfor %}
+                            <li class="nav-list-item">
+                    <a><span class="split"></span></a>
+                </li>
+                <li class="nav-list-item ">
+                    <a href="{% url 'all_genres' %}">
+                        更多>>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

@@ -1,10 +1,13 @@
 # encoding:utf-8
-
+from django.db import connection
+from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView, ListView
 
-from bbs.models import Movie, Torrent
+from bbs.models import Movie, Torrent, raw_sql_get_genres
 
+connection.queries
 
 class PaginationListView(ListView):
     paginate_by = 30
@@ -61,7 +64,9 @@ class Index(PaginationListView):
     template_name = 'bbs/index.html'
 
     def get_queryset(self):
-        return Movie.objects.filter(pubdate__isnull=False).order_by('-pubdate')
+        m = Movie.objects.filter(Q(pubdate__isnull=False), Q(torrent__isnull=False))
+        m.query.group_by = ['id']
+        return m
 
 
 class Detail(DetailView):
@@ -79,26 +84,33 @@ class Tag(PaginationListView):
         return Movie.objects.filter(tags__name__in=[self.kwargs['tag_name']]).order_by('-pubdate').all()
 
 
-class Data(PaginationListView):
-    template_name = 'bbs/data.html'
-    name_cn = ''
+# class Data(PaginationListView):
+#     template_name = 'bbs/data.html'
+#     name_cn = ''
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(Data, self).get_context_data(**kwargs)
+#         context['name'] = self.kwargs['name']
+#         context['name_cn'] = self.name_cn
+#         return context
 
-    def get_context_data(self, **kwargs):
-        context = super(Data, self).get_context_data(**kwargs)
-        context['name'] = self.kwargs['name']
-        context['name_cn'] = self.name_cn
-        return context
-
-class DateCountry(Data):
-    name_cn = '国家'
-    def get_queryset(self):
-        return Movie.objects.filter(countries__contains=[self.kwargs['name']]).order_by('-pubdate').all()
+# class DateCountry(Data):
+#     name_cn = '国家'
+#     def get_queryset(self):
+#         return Movie.objects.filter(countries__contains=[self.kwargs['name']]).order_by('-pubdate').all()
 
 class Genres(PaginationListView):
     template_name = 'bbs/data.html'
 
     def get_queryset(self):
+        if self.kwargs['name'] not in raw_sql_get_genres():
+            raise Http404()
         return Movie.objects.filter(genres__contains=[self.kwargs['name']]).order_by('-rating', '-pubdate').all()
+
+    def get_context_data(self, **kwargs):
+        context = super(Genres, self).get_context_data(**kwargs)
+        context['name'] = self.kwargs['name']
+        return context
 
 def download(request, tid):
     etag = request.GET['etag']
@@ -106,3 +118,7 @@ def download(request, tid):
     torrent = get_object_or_404(Torrent, pk=tid, etag=etag, info_hash=info_hash)
 
     return render(request, 'bbs/download.html', {'torrent': torrent})
+
+
+def all_genres(request):
+    return render(request, 'bbs/genres.html', {'genres': raw_sql_get_genres()})

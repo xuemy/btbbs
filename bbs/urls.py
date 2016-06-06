@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^t/(?P<tag_name>.+)$', views.Tag.as_view(), name='tag'),
 
     url(r'^genres/(?P<name>.+)$', views.Genres.as_view(), name='genres'),
+    url(r'^genres$', views.all_genres, name='all_genres'),
     # url(r'^genre/(?P<genre>.+)$', views.Genre.as_view(), name='genre'),
 
     # url(r'^data/(?P<data>(cast)|(writer)|(director)|(genre)|(country))/(?P<name>.+)$', views.Data.as_view(), name='data'),

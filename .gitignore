@@ -79,3 +79,12 @@ btbbs/wsgi.pyc
 init_db.pyc
 bbs/search.pyc
 bbs/views.pyc
+/Vagrantfile
+/.vagrant/
+.vagrant/
+bbs/migrations/0002_auto_20160530_2223.py
+bbs/migrations/0003_auto_20160601_1652.py
+bbs/migrations/0004_auto_20160601_1654.py
+bbs/migrations/0005_auto_20160602_0940.py
+btbbs.7z
+btbbs.sql

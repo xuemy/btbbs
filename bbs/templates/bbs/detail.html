@@ -1,9 +1,10 @@
 {% extends "bbs/base.html" %}
 
 {% block title %}{{ detail.name }}{{ detail.get_torrent_type|join:'|' }}BT种子磁力下载-{{ site.domain }}{% endblock %}
-{% block keyword %}
-    {{ detail.original_title }}|{{ detail.aka|join:'|' }}
+{% block keywords %}
+    {{ detail.original_title }}|{{ detail.aka|join:'/' }},2016,{{ detail.get_torrent_type|join:"|" }}高清BT种子磁力下载
 {% endblock %}
+
 {% block main %}
 <div class="detail">
     <div class="detail-t">
@@ -18,7 +19,6 @@
                         {% ifequal detail.subtype  "tv" %}
                         <i class="fa fa-television" aria-hidden="true"></i> <small>电视剧</small>
                         {% endifequal %}
-
                     </span>
                     <div class="detail-header-info">
                         <h1>{{ detail.get_name|safe }} <small><a href="#download">点击下载种子</a></small></h1>
@@ -81,7 +81,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-9">
-                    <p>种子文件下载</p>
+                    <p>下载地址： <small>影片文件越大，画质越清晰。一般下载顺序1080p > 720p > 高清</small></p>
                     <div class="" id="download">
                         {% for t in detail.get_torrents %}
                             <div class="p">

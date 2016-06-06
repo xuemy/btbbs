@@ -1,0 +1,39 @@
+.f-tree .f {
+  border-bottom: 1px dashed #d5d5d5;
+}
+.f .f-name {
+  font-size: 16px;
+  margin: 5px 0;
+}
+.f .f-name i {
+  margin-right: 5px;
+  font-size: 18px;
+  color: #c62c30;
+}
+.sub-f {
+  color: #a3a3a3;
+  margin-left: 20px;
+}
+.sub-f .t-name {
+  color: #d41210;
+}
+.sub-f .sub-f-light {
+  color: #d41310;
+  font-size: 14px;
+}
+.torrent-f {
+  padding: 10px;
+}
+.torrent-f h2 {
+  font: 15px Arial, Helvetica, sans-serif;
+  color: #774535;
+  line-height: 150%;
+  margin: 24px 0 3px 0;
+}
+.torrent-f p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+.torrent-f li {
+  border-bottom: 1px dashed #ddd;
+}

@@ -60,6 +60,11 @@ class Movie(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = [
+            '-pubdate', '-rating'
+        ]
+
 
     @permalink
     def get_absolute_url(self):
