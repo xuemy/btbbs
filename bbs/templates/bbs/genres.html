@@ -1,0 +1,33 @@
+{% extends "bbs/base.html" %}
+{% block title %}
+所有电影分类
+{% endblock %}
+
+{% block keywords %}
+电影分类列表
+{% endblock %}
+
+{% block description %}
+本页面提供所有的电影分类列表
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="page-header">
+                <h3>所有电影分类：</h3>
+            </div>
+                <ul class="list-inline">
+                    {% for genre in genres %}
+                        <li><a href="{% url 'genres' name=genre %}">{{ genre }}</a></li>
+                    {% endfor %}
+                </ul>
+        </div>
+        <div class="col-md-"></div>
+    </div>
+
+    </div>
+
+
+{% endblock %}

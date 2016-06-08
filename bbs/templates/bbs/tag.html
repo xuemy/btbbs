@@ -1,0 +1,24 @@
+{% extends "bbs/base.html" %}
+
+{% block title %}
+{{ name }}
+{% endblock %}
+
+{% block keywords %}
+{{ name }}-{{ name }}1080p高清电影BT下载-{{ name }}720p电影高清下载
+{% endblock %}
+
+{% block description %}
+本页面是关于标签:{{ name }}的所有电影，提供{{ name }}1080p高清BT下载，{{ name }}720p高清下载
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                {% include "bbs/article-list.html" %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

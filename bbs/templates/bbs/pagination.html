@@ -1,0 +1,39 @@
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}">前一页</a></li>
+    {% else %}
+        <li class="disabled">
+            <span>
+        <span aria-hidden="true">前一页</span>
+      </span></li>
+    {% endif %}
+
+    {% for page in pages %}
+        {% if page %}
+            {% ifequal page current_page %}
+            <li class="active">
+            <span>{{ page }}<span class="sr-only">(current)</span></span>
+            </li>
+                {% else %}
+                <li>
+                    <a href="?page={{ page }}">{{ page }}</a>
+                </li>
+            {% endifequal %}
+        {% else %}
+        <li class="disabled">
+                  <span>
+        <span aria-hidden="true">......</span>
+      </span>
+        </li>
+
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}">后一页</a></li>
+    {% else %}
+        <li class="disabled"><span>
+        <span aria-hidden="true">后一页</span>
+      </span></li>
+    {% endif %}
+</ul>

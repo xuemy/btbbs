@@ -1,0 +1,5 @@
+<ul class="taglist clearfix">
+    {% for tag in tags %}
+        <li class="tagPopup"><a class="tag tag-sm" href="{% url 'tag' tag.name %}">{{ tag.name }}</a></li>
+    {% endfor %}
+</ul>

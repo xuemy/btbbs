@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{% spaceless %}{% block title %}{% endblock %}{% endspaceless %} - {{ site.name }}</title>
+    <meta name="keywords" content="{% spaceless %}{% block keywords %}{% endblock %}{% endspaceless %} - {{ site.name }}">
+    <meta name="description" content="{% spaceless %}{% block description %}{% endblock %}{% endspaceless %} -{{ site.name }}">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="/static/bbs/logo.ico" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://apps.bdimg.com/libs/fontawesome/4.4.0/css/font-awesome.min.css">
+    {% load staticfiles %}
+    <link rel="stylesheet" href="/static/bbs/main.css">
+    {#        <link rel="stylesheet" href="{% static 'main.css' %}">#}
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?13cefbc5d4a15806614a432c331dac5f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+    <script src="{% static 'js/vendor/modernizr-2.6.2.min.js' %}"></script>
+</head>
+<body>
+<div class="bbs-header">
+    <div class="container nav">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="bbs-logo">
+                    <h1><a href="/">SgmentFault</a></h1>
+                </div>
+            </div>
+            <div class="col-lg-6 text-right"></div>
+        </div>
+    </div>
+</div>
+<div class="bbs-nav">
+    <div class="container">
+        <nav class="nav">
+            <ul class="nav-list">
+                <li class="nav-list-item">
+                    <a href="{% url 'index' %}">
+                        <i class="fa fa-home"></i>主页
+                    </a>
+                </li>
+
+                <li class="nav-list-item">
+                    <a><span class="split"></span></a>
+                </li>
+
+                {% for genre in default_genres %}
+                    <li class="nav-list-item nav-list-item2"><a target="_blank" href="{% url 'genres' name=genre %}" title="{{ genre }}电影，{{ genre }}电影BT下载">{{ genre }}</a></li>
+                {% endfor %}
+                            <li class="nav-list-item">
+                    <a><span class="split"></span></a>
+                </li>
+                <li class="nav-list-item ">
+                    <a href="{% url 'all_genres' %}">
+                        更多>>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<div class="main">
+        {% block main %}
+
+        {% endblock %}
+</div>
+<div class="footer">
+    <div class="container">
+        <p class="text-center">
+            Copyright © 2016
+        </p>
+    </div>
+</div>
+
+
+<script src="https://apps.bdimg.com/libs/jquery/1.9.0/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.9.0.min.js"><\/script>')</script>
+<script src="https://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="/static/js/plugins.js"></script>
+<script>
+                        $(document).ready(function(){
+                        $('.intro_img img').each(function(){
+                            autoImgSize($(this));
+                        })
+                    })
+</script>
+<script>
+    var _gaq = [['_setAccount', 'UA-XXXXX-X'], ['_trackPageview']];
+    (function (d, t) {
+        var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+        g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g, s)
+    }(document, 'script'));
+</script>
+</body>
+</html>

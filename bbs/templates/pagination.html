@@ -1,0 +1,26 @@
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}">前一页</a></li>
+    {% else %}
+        <li class="active"><a>前一页</a></li>
+    {% endif %}
+
+    {% for p in page_range %}
+            {% ifequal p '...' %}
+                <li class="disabled">{{ p }}</li>
+
+        {% endifequal %}
+
+        {% ifequal p page_obj.number %}
+            <li class="active"><a>{{ p }}</a></li>
+            {% else %}
+                <li><a href="?page={{ p }}" title="第{{ p }}页">{{ p }}</a><li>
+            {% endifequal %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}">后一页</a></li>
+    {% else %}
+        <li class="active"><a>后一页</a></li>
+    {% endif %}
+</ul>

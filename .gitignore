@@ -75,4 +75,4 @@ bbs/migrations/0003_auto_20160601_1652.py
 bbs/migrations/0004_auto_20160601_1654.py
 bbs/migrations/0005_auto_20160602_0940.py
 bbs/viewss/
-test_data.py
+

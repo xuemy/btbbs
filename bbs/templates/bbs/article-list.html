@@ -1,0 +1,27 @@
+<div class="article-list">
+    {% for article in article_list %}
+        <section class="article-list-item clearfix">
+            <div class="rank">
+                <div class="article-img">
+                    <img class="img-rounded" src="{{ article.get_image }}" alt="" style="width: 70px;height: 90px;">
+                </div>
+            </div>
+            <div class="summary">
+                <ul class="list-inline other">
+                    {#                            <li>本文件包含有{{ article.get_torrent_type|join:", " }}的下载链接</li>#}
+                </ul>
+                <h2 class="title">
+                    <a href="{{ article.get_absolute_url }}" target="_blank">{{ article.get_name|safe }}</a>
+                </h2>
+                {% with article.tags.all as tags %}
+                    {% include "bbs/taggit.html" %}
+                {% endwith %}
+
+                <div class="article-rating">
+                    <img src="https://img3.doubanio.com/favicon.ico" alt="" style="width: 16px;height: 16px">豆瓣评分:{{ article.rating|default_if_none:0.0 }}
+                </div>
+            </div>
+        </section>
+    {% endfor %}
+</div>
+{% include "bbs/pagination.html" %}
