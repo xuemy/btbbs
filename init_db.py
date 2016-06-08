@@ -13,7 +13,7 @@ from slugify import slugify
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "btbbs.settings")
 django.setup()
-from bbs.models import Movie, Category
+from bbs.models import Movie
 import pymongo
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')
@@ -366,3 +366,4 @@ if __name__ == '__main__':
     #     movie.save()
     #     f.write("{0}\n".format(id))
     #     print '成功添加{0}'.format(name)
+    Movie.objects.filter(torrent__isnull=True)
