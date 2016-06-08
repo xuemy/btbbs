@@ -3,14 +3,11 @@ from __future__ import unicode_literals
 
 from django.conf.urls import url
 from django.contrib.sitemaps import GenericSitemap
-from django.core.urlresolvers import set_script_prefix
 from django.views.decorators.cache import cache_page
 
-from bbs import search
 from bbs import sitemap
 from bbs import views
 from bbs.models import Movie
-set_script_prefix("http://www.baidu.com")
 
 class LimitSitemap(GenericSitemap):
     limit = 2000
@@ -30,6 +27,7 @@ urlpatterns = [
     url(r'^t/(?P<tag_name>.+)$', views.Tag.as_view(), name='tag'),
 
     url(r'^genres/(?P<name>.+)$', views.Genres.as_view(), name='genres'),
+
     url(r'^genres$', views.all_genres, name='all_genres'),
     # url(r'^genre/(?P<genre>.+)$', views.Genre.as_view(), name='genre'),
 
@@ -46,5 +44,5 @@ urlpatterns = [
         {'sitemaps': sitemaps}, name='sitemaps'),
 
     # url(r'search-data\.xml', search.index,),
-    url(r'search-data\.xml', search.search, name='search')
+    # url(r'search-data\.xml', search.search, name='search')
 ]

@@ -83,6 +83,11 @@ class Tag(PaginationListView):
     def get_queryset(self):
         return Movie.objects.filter(tags__name__in=[self.kwargs['tag_name']]).order_by('-pubdate').all()
 
+    def get_context_data(self, **kwargs):
+        context = super(Tag, self).get_context_data(**kwargs)
+        context['name'] = self.kwargs['tag_name']
+        return context
+
 
 # class Data(PaginationListView):
 #     template_name = 'bbs/data.html'

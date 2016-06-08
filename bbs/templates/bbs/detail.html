@@ -1,6 +1,8 @@
 {% extends "bbs/base.html" %}
 
-{% block title %}{{ detail.name }}{{ detail.get_torrent_type|join:'|' }}BT种子磁力下载-{{ site.domain }}{% endblock %}
+{% block title %}
+    {{ detail.name }}{{ detail.get_torrent_type|join:'|' }}BT种子磁力下载
+{% endblock %}
 {% block keywords %}
     {{ detail.original_title }}|{{ detail.aka|join:'/' }},2016,{{ detail.get_torrent_type|join:"|" }}高清BT种子磁力下载
 {% endblock %}

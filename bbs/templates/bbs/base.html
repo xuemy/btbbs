@@ -7,9 +7,10 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{% spaceless %}{% block title %}{% endblock %}{% endspaceless %}</title>
-    <meta name="keywords" content="{% spaceless %}{% block keywords %}{% endblock %}{% endspaceless %}">
-    <meta name="description" content="{% spaceless %}{% block description %}{% endblock %}{% endspaceless %}">
+    <title>{% spaceless %}{% block title %}{% endblock %}{% endspaceless %} - {{ site.name }}</title>
+    <meta name="keywords" content="{% spaceless %}{% block keywords %}{% endblock %}{% endspaceless %} - {{ site.name }}">
+    <meta name="description" content="{% spaceless %}{% block description %}{% endblock %}{% endspaceless %} -{{ site.name }}">
+    <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width">
     <link rel="shortcut icon" href="/static/bbs/logo.ico" />
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
