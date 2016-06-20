@@ -9,7 +9,6 @@ import re
 import django
 from bson import ObjectId
 from jinja2 import Template
-from slugify import slugify
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "btbbs.settings")
 django.setup()
@@ -84,19 +83,6 @@ class Files(models.Model):
 '''
 
 
-def add_type_slug():
-    all_types = Type.objects.all()
-    for t in all_types:
-        if t.name == '电影':
-            t.slug = 'movie'
-            t.save()
-        elif t.name == '电视剧':
-            t.slug = 'tv'
-            t.save()
-        else:
-            t.slug = slugify(t.name, separator="")
-            t.save()
-
 
 def add_intro(**kwargs):
     temp = '''
@@ -127,19 +113,6 @@ def add_intro(**kwargs):
     return template.render(kwargs)
 
 
-def move_category():
-    for m in db.movie_items.find():
-        movie = Movie.objects.get(douban_id=m['id'])
-        if not m['category']:
-            category = Category.objects.get(name=u'电视剧')
-            movie.category.add(category)
-            movie.save()
-        else:
-            category = Category.objects.get(name=u'电影')
-            cats = m['category']
-            movie.category = map(lambda x: category.sons.get_or_create(name=x)[0], cats)
-
-            movie.save()
 
 
 def getLoger(log_name, level=logging.INFO, file_handler=False):
@@ -232,26 +205,11 @@ def init_y_id():
         )
         log.info('成功 %s--%s' % (douban_id, y_obj['_id']))
     map(x, y.find())
-def init_category():
-    movie = Category.objects.get(name='电影')
-    tv = Category.objects.get(name='电视剧')
 
-    def func(obj):
-        t = obj.get('subtype')
-        try:
-            m = Movie.objects.get(douban_id=obj['id'])
-        except:
-            return
-        if t and t == 'movie':
-            m.category = movie
-            m.save()
-        if t and t == 'tv':
-            m.category = tv
-            m.save()
-    map(func, db.x.find())
 
 if __name__ == '__main__':
-    init_category()
+    pass
+
     # init_y_id()
     # add_shangyin()
     # d = format_datetime('2016')

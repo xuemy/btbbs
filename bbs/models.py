@@ -9,9 +9,14 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import permalink
 from taggit.managers import TaggableManager
-
 # Create your models here.
 from bbs.utils import humanbytes
+
+
+
+# pg_dump -d btbbs -h 127.0.0.1 -U postgres > bt2020.sql
+# pg_dump -d btbbs -h 127.0.0.1 -U postgres -O -a -t bbs_movie -t bbs_torrent -t bbs_torrentinfo -t taggit_tag -t taggit_taggeditem > bt2020.sql
+# pg_dump -d btbbs -h 127.0.0.1 -U postgres -O -s -t bbs_movie -t bbs_torrent -t bbs_torrentinfo -t taggit_tag -t taggit_taggeditem > bt2020_schem.sql
 
 detail_format = '''
 <p>◎译　　名 :星球大战7：原力觉醒/星球大：原力觉醒/星际大战七部曲：原力觉醒(台)</p>
@@ -54,6 +59,8 @@ class Movie(models.Model):
     writer = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='编剧')
     movie_duration = ArrayField(models.CharField(max_length=255), null=True, db_index=True, verbose_name='片长')
 
+    ctime = models.DateTimeField(auto_created=True, auto_now_add=True)
+
     _torrent_type = None
     _torrents = None
 
@@ -71,6 +78,7 @@ class Movie(models.Model):
         return ('detail', (), {
             'douban_id': self.douban_id,
         })
+
 
     @property
     def get_name(self):
@@ -92,7 +100,8 @@ class Movie(models.Model):
             regex = re.compile(r'(720p|1080p)', re.I)
             res = []
             torrent_type = set()
-            for torrent in torrents:
+            for _torrent in torrents:
+                torrent = _torrent.torrentinfo
                 m = regex.search(torrent.name)
                 if m:
                     x = m.group()
@@ -102,7 +111,7 @@ class Movie(models.Model):
                 count = sum([d['size'] for d in json.loads(torrent.detail)])
                 name = '【{}】.{}/{}.{}.{}.torrent'.format(x,self.name,self.original_title,'/'.join(self.genres),humanbytes(count))
                 res.append(
-                    dict(name=name, id = torrent.id, etag =torrent.etag, info_hash=torrent.info_hash)
+                    dict(name=name, id=torrent.id, etag =torrent.etag, info_hash=torrent.info_hash)
                 )
             self._torrent_type = list(torrent_type)
             self._torrents = res
@@ -124,7 +133,7 @@ class Movie(models.Model):
         m = Movie.objects.raw('SELECT DISTINCT "unnest"(bbs_movie.genres) as genres from bbs_movie;',translations={"genres":'genres','id':'id'})
         return m
 
-class Torrent(models.Model):
+class Torrent_t(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     etag = models.CharField(max_length=40, unique=True)
@@ -144,6 +153,41 @@ class Torrent(models.Model):
 
     def get_magnet(self):
         return 'magnet:?xt=urn:btih:{}'.format(self.info_hash)
+
+class Torrent(models.Model):
+    f = models.FileField()
+    views = models.IntegerField(default=1)
+    movie = models.ForeignKey(Movie)
+
+    def __unicode__(self):
+        return self.torrentinfo.name
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super(Torrent, self).save()
+
+class TorrentInfo(models.Model):
+    t = models.OneToOneField(Torrent, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    etag = models.CharField(max_length=40, unique=True)
+    info_hash = models.CharField(max_length=40, unique=True)
+    detail = models.TextField(null=True)
+
+    def __unicode__(self):
+        return self.name
+
+    @property
+    def magnet(self):
+        return 'magnet:?xt=urn:btih:{}'.format(self.info_hash)
+
+class TestFile(models.Model):
+    F = models.FileField()
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        super(TestFile, self).save(force_insert=False, force_update=False, using=None,
+             update_fields=None)
+        print self.F.read()
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"

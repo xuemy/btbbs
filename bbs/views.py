@@ -1,13 +1,11 @@
 # encoding:utf-8
-from django.db import connection
 from django.db.models import Q
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 
-from bbs.models import Movie, Torrent, raw_sql_get_genres
+from bbs.models import Movie, raw_sql_get_genres, TorrentInfo
 
-connection.queries
 
 class PaginationListView(ListView):
     paginate_by = 30
@@ -64,7 +62,7 @@ class Index(PaginationListView):
     template_name = 'bbs/index.html'
 
     def get_queryset(self):
-        m = Movie.objects.filter(Q(pubdate__isnull=False), Q(torrent__isnull=False))
+        m = Movie.objects.select_related().filter(Q(pubdate__isnull=False), Q(torrent__isnull=False))
         m.query.group_by = ['id']
         return m
 
@@ -120,9 +118,12 @@ class Genres(PaginationListView):
 def download(request, tid):
     etag = request.GET['etag']
     info_hash = request.GET['key']
-    torrent = get_object_or_404(Torrent, pk=tid, etag=etag, info_hash=info_hash)
 
-    return render(request, 'bbs/download.html', {'torrent': torrent})
+    try:
+        info = TorrentInfo.objects.select_related().get(pk=tid, etag=etag,info_hash=info_hash)
+        return render(request, 'bbs/download.html', {'info': info})
+    except:
+        raise Http404()
 
 
 def all_genres(request):

@@ -162,47 +162,11 @@ def upload_to_qiniu(AK, SK, BUCKET_NAME,FILE_OBJ,FILE_NAME,):
             return ret['hash']
         return None
     return None
-def pagination(request, queryset, display_amount=15, after_range_num=5, bevor_range_num=4):
-
-    paginator = Paginator(queryset, display_amount)
-    page = request.GET.get('page')
-
-    try:
-        # 尝试获得分页列表
-        objects = paginator.page(page)
-    except PageNotAnInteger:
-        objects = paginator.page(1)
-    # 如果页数不存在
-    except EmptyPage:
-        # 获得最后一页
-        objects = paginator.page(paginator.num_pages)
-
-    _t = list(paginator.page_range)
-    page = objects.number
-    if page >= after_range_num:
-        page_range = _t[page - after_range_num:page + bevor_range_num]
-    else:
-        page_range = _t[0:page + bevor_range_num]
-    return objects, page_range
-def hot_movie():
-    objs = Movie.objects.exclude(torrent__isnull=True).exclude(show_time=None). \
-               filter(category__name='电影').order_by('-show_time').all()[:12]
-    return {
-        'name': '电影',
-        'objs': objs
-    }
 
 
-def hot_tv(request):
-    objs_query = Movie.objects.exclude(torrent__isnull=True). \
-               exclude(show_time=None).filter(category__name='电视剧'). \
-               order_by('-show_time').all()
-    objs, page_range = pagination(request, objs_query, display_amount=12)
-    return {
-        'name': '电视剧',
-        'objs': objs
-    }
-
+def parse_torrent(obj):
+    import libtorrent as lt
+    lt.bdecode(obj)
 if __name__ == '__main__':
     # s = '''[{"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Sinister.2012.720p.BluRay.X264-AMIABLE.mkv", "size": 4693301804}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Sample/sinister.2012.720p.bluray.x264-amiable.sample.mkv", "size": 55269373}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Subs/sinister.2012.720p.bluray.x264-amiable.subs.rar", "size": 1328525}, {"name": "Sinister.2012.720p.BluRay.X264-AMIABLE/Subs/sinister.2012.720p.bluray.x264-amiable.subs.sfv", "size": 58}]'''
     # print json.loads(s)

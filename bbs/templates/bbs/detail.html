@@ -4,98 +4,114 @@
     {{ detail.name }}{{ detail.get_torrent_type|join:'|' }}BT种子磁力下载
 {% endblock %}
 {% block keywords %}
-    {{ detail.original_title }}|{{ detail.aka|join:'/' }},2016,{{ detail.get_torrent_type|join:"|" }}高清BT种子磁力下载
+    {{ detail.original_title }}.{{ detail.aka|join:'/' }}.2016.{{ detail.get_torrent_type|join:"|" }}高清BT种子磁力下载
+{% endblock %}
+{% block description %}
+    {{ detail.summary|slice:'255'}}
+{% endblock %}
+{% block meta %}
+    <link rel="canonical" href="http://www.{{ site.domain }}{{ request.path }}" />
+    <meta property='og:locale' content='zh_CN'/>
+    <meta property='og:type' content='article'/>
+    <meta property='og:title' content='{{ detail.name }}{{ detail.get_torrent_type|join:'|' }}BT种子磁力下载 - {{ site.name }}'/>
+    <meta property='og:description' content='{{ detail.summary|slice:'255' }}'/>
+    <meta property='og:url' content='http://www.{{ site.domain }}{{ request.path }}'/>
+    <meta property='og:site_name' content='{{ detail.genres|join:" " }} - {{ site.name }}'/>
+    <meta property='og:image' content='{{ detail.get_image }}'/>
 {% endblock %}
 
 {% block main %}
-<div class="detail">
-    <div class="detail-t">
-        <div class="container">
-        <div class="row">
-            <div class="col-md-9">
-                <div class="detail-header">
+    <div class="detail">
+        <div class="detail-t">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="detail-header">
                     <span class="detail-header-icon">
                         {% ifequal detail.subtype "movie" %}
-                        <i class="fa fa-film" aria-hidden="true"></i>
+                            <i class="fa fa-film" aria-hidden="true"></i>
                         {% endifequal %}
                         {% ifequal detail.subtype  "tv" %}
-                        <i class="fa fa-television" aria-hidden="true"></i> <small>电视剧</small>
+                            <i class="fa fa-television" aria-hidden="true"></i>
+                            <small>电视剧</small>
                         {% endifequal %}
                     </span>
-                    <div class="detail-header-info">
-                        <h1>{{ detail.get_name|safe }} <small><a href="#download">点击下载种子</a></small></h1>
-                        {% with detail.tags.all as tags %}{% include "bbs/taggit.html" %}{% endwith %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-        </div>
-    </div>
-    </div>
-
-    <div class="detail-main">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="detail-info clearfix">
-                        <div class="detail-img">
-                            <img src="{{ detail.get_image }}" alt="">
-                        </div>
-                        <div class="info">
-                            <p style="font-size: 18px;">
-                                {{ detail.name }}
-                            </p>
-                            <p>◎译　　名 :{{ detail.aka|join:'/' }}</p>
-                            <p>◎片　　名 :{{ detail.original_title }}</p>
-                            <p>◎年　　代 :{{ detail.year }}</p>
-                            <p>◎国　　家 :{{ detail.countries|join:'/' }}</p>
-                            <p>◎类　　别 :{{ detail.genres|join:'/' }}</p>
-                            <p>◎语　　言 :{{ detail.language |join:'/'}}</p>
-{#                            <p>◎字　　幕 :中英双字</p>#}
-                            <p>◎上映日期 :{{ detail.pubdate | date:'Y-m-d' }}</p>
-                            <p>◎豆瓣评分 :{{ detail.rating }}</p>
-                            <p>◎片　　长 :{{ detail.movie_duration | join:'/' }}</p>
-                            <p>◎导　　演 :{{ detail.directors | join:'/' }}</p>
-                            <p>◎主　　演 :{{ detail.casts|join:'/' }}</p>
+                            <div class="detail-header-info">
+                                <h1>{{ detail.get_name|safe }}
+                                    <small><a href="#download">点击下载种子</a></small>
+                                </h1>
+                                {% with detail.tags.all as tags %}{% include "bbs/taggit.html" %}{% endwith %}
+                            </div>
                         </div>
                     </div>
-                    <div class="detail-intro clearfix">
-                        {{ detail.intro|safe }}
-                    </div>
-                </div>
-                <script>
-                    var autoImgSize = function(img){
-                        var tempImg = new Image();
-                        tempImg.src = img.attr('src');
-                        var imgWidth = tempImg.width;
-                        var imgHeight = tempImg.height;
-                        img.width(imgWidth/2);
-                        img.height(imgHeight/2);
-                    };
-
-
-                </script>
-            </div>
-        </div>
-    </div>
-
-    <div class="torrent">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-9">
-                    <p>下载地址： <small>影片文件越大，画质越清晰。一般下载顺序1080p > 720p > 高清</small></p>
-                    <div class="" id="download">
-                        {% for t in detail.get_torrents %}
-                            <div class="p">
-                                <a href="{% url 'download' t.id %}?etag={{ t.etag }}&key={{ t.info_hash }}">{{ t.name }}</a>
-                        </div>
-                        {% endfor %}
-
-
-                    </div>
+                    <div class="col-md-3"></div>
                 </div>
             </div>
         </div>
+
+        <div class="detail-main">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="detail-info clearfix">
+                            <div class="detail-img">
+                                <img src="{{ detail.get_image }}" alt="">
+                            </div>
+                            <div class="info">
+                                <p style="font-size: 18px;">
+                                    {{ detail.name }}
+                                </p>
+                                <p>◎译　　名 :{{ detail.aka|join:'/' }}</p>
+                                <p>◎片　　名 :{{ detail.original_title }}</p>
+                                <p>◎年　　代 :{{ detail.year }}</p>
+                                <p>◎国　　家 :{{ detail.countries|join:'/' }}</p>
+                                <p>◎类　　别 :{{ detail.genres|join:'/' }}</p>
+                                <p>◎语　　言 :{{ detail.language |join:'/' }}</p>
+                                {#                            <p>◎字　　幕 :中英双字</p>#}
+                                <p>◎上映日期 :{{ detail.pubdate | date:'Y-m-d' }}</p>
+                                <p>◎豆瓣评分 :{{ detail.rating }}</p>
+                                <p>◎片　　长 :{{ detail.movie_duration | join:'/' }}</p>
+                                <p>◎导　　演 :{{ detail.directors | join:'/' }}</p>
+                                <p>◎主　　演 :{{ detail.casts|join:'/' }}</p>
+                            </div>
+                        </div>
+                        <div class="detail-intro clearfix">
+                            {{ detail.intro|safe }}
+                        </div>
+                    </div>
+                    <script>
+                        var autoImgSize = function (img) {
+                            var tempImg = new Image();
+                            tempImg.src = img.attr('src');
+                            var imgWidth = tempImg.width;
+                            var imgHeight = tempImg.height;
+                            img.width(imgWidth / 2);
+                            img.height(imgHeight / 2);
+                        };
+
+
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="torrent">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <p>下载地址：
+                            <small>影片文件越大，画质越清晰。一般下载顺序1080p > 720p > 高清</small>
+                        </p>
+                        <div class="" id="download">
+                            {% for t in detail.get_torrents %}
+                                <div class="p">
+                                    <a href="{% url 'download' t.id %}?etag={{ t.etag }}&key={{ t.info_hash }}">{{ t.name }}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 {% endblock %}

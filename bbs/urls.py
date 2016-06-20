@@ -14,7 +14,7 @@ class LimitSitemap(GenericSitemap):
 
 
 sitemaps = {
-    'movie': LimitSitemap({'queryset': Movie.objects.all(), 'date_field': 'ctime'}, priority=0.6),
+    'movie': LimitSitemap({'queryset': Movie.objects.all(), 'date_field': 'pubdate'}, priority=0.6),
 }
 
 urlpatterns = [

@@ -6,11 +6,12 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 import arrow
 import django
+import libtorrent
 import pymongo
 #
 # mongodb
 import re
-from django.db import connections, connection
+from django.db import connection
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "btbbs.settings")
 django.setup()
@@ -198,38 +199,38 @@ def move_data_to_postgresql():
             log.info('数据存在{}'.format(douban_id))
 
 
-def move_Torrento_movie():
-    torrent_cursor = connections['torrent'].cursor()
-    movie_cursor = connection.cursor()
-    torrent_cursor.execute('select * from torrent_info')
-    description = [x[0] for x in torrent_cursor.description]
-    res = torrent_cursor.fetchall()
-    log = getLoger('move_to_postgresql')
-    def f(r):
-        res_dict = dict(zip(description, r))
-        if not res_dict['etag'] or not res_dict['info_hash'] or not res_dict['key']:
-            return
-        query = Torrent.objects.filter(info_hash=res_dict['info_hash'])
-        if query.exists():
-            return
-        else:
-            m = Movie.objects.filter(douban_id=res_dict['douban_id']).first()
-            if m:
-                movie_cursor.execute("insert into bbs_Torrent (name, etag, info_hash, f, movie_id, detail) VALUES (%s,%s,%s,%s,%s,%s)",[
-                    res_dict['name'],
-                    res_dict['etag'],
-                    res_dict['info_hash'],
-                    './%s' %res_dict['key'],
-                    m.id,
-                    res_dict['detail']
-                ])
-                log.info('成功转移数据%s' % res_dict['name'])
-    log.info('开始转移数据')
-    map(f, res)
-    # pool = ThreadPool(4)
-    # pool.map(f, res)
-    # pool.join()
-    # pool.close()
+# def move_Torrento_movie():
+#     torrent_cursor = connections['torrent'].cursor()
+#     movie_cursor = connection.cursor()
+#     torrent_cursor.execute('select * from torrent_info')
+#     description = [x[0] for x in torrent_cursor.description]
+#     res = torrent_cursor.fetchall()
+#     log = getLoger('move_to_postgresql')
+#     def f(r):
+#         res_dict = dict(zip(description, r))
+#         if not res_dict['etag'] or not res_dict['info_hash'] or not res_dict['key']:
+#             return
+#         query = Torrent.objects.filter(info_hash=res_dict['info_hash'])
+#         if query.exists():
+#             return
+#         else:
+#             m = Movie.objects.filter(douban_id=res_dict['douban_id']).first()
+#             if m:
+#                 movie_cursor.execute("insert into bbs_Torrent (name, etag, info_hash, f, movie_id, detail) VALUES (%s,%s,%s,%s,%s,%s)",[
+#                     res_dict['name'],
+#                     res_dict['etag'],
+#                     res_dict['info_hash'],
+#                     './%s' %res_dict['key'],
+#                     m.id,
+#                     res_dict['detail']
+#                 ])
+#                 log.info('成功转移数据%s' % res_dict['name'])
+#     log.info('开始转移数据')
+#     map(f, res)
+#     # pool = ThreadPool(4)
+#     # pool.map(f, res)
+#     # pool.join()
+#     # pool.close()
 # def remove_error_torrent():
 #     torrents = Torrent.objects.all()
 #     def remove(torrent):
@@ -248,6 +249,41 @@ def move_tags():
             y_dict = parse_y(y_obj)
             m.tags.add(*y_dict['tags'])
 
+def test_libtorrent():
+    t_decode = libtorrent.bdecode(open('004f50950256e66f128d528d0773fdefbc298cce.torrent', 'rb').read())
+    t_info = libtorrent.torrent_info(t_decode)
+    print t_info
+    # print t_info.map_file()
+def quote_name(name):
+        if name.startswith('"') and name.endswith('"'):
+            return name  # Quoting once is enough.
+        return '"%s"' % name
+def last_insert_id(cursor, table_name, pk_name):
+        # Use pg_get_serial_sequence to get the underlying sequence name
+        # from the table name and column name (available since PostgreSQL 8)
+        cursor.execute("SELECT CURRVAL(pg_get_serial_sequence('%s','%s'))" % (
+            quote_name(table_name), pk_name))
+        return cursor.fetchone()[0]
+def move_torrent():
+    cursor = connection.cursor()
+    torrent_t = cursor.execute('select * from bbs_torrent_t')
+    all = cursor.fetchall()
+    def move(t):
+        name = t[1]
+        etag = t[2]
+        info_hash = t[3]
+        f = t[4]
+        movie_id = t[6]
+        detail = t[7]
+        # print name, etag, info_hash, movie_id, detail
+        cursor.execute('INSERT INTO bbs_torrent(f, views ,movie_id) VALUES (%s, %s, %s)', (f, 1, movie_id))
+        tid = last_insert_id(cursor, 'bbs_torrent', 'id')
+
+        cursor.execute('INSERT INTO bbs_torrentinfo(name, etag, info_hash, detail, t_id) VALUES (%s,%s,%s,%s,%s)',
+                       (name, etag, info_hash, detail, tid))
+
+    for t in all:
+        move(t)
 if __name__ == '__main__':
     # print parse_x(x.find_one())
     # test_genres()
@@ -266,4 +302,6 @@ if __name__ == '__main__':
     # isnull = Movie.objects.filter(Torrent__isnull=True).all()
     # for i in isnull:
     #     print i.name
-    move_tags()
+    # move_tags()
+    # test_libtorrent()
+    move_torrent()
