@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'taggit',
+
     'bbs',
+    'static_sitemaps',
     # 'pagination',
 ]
 

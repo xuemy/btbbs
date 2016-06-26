@@ -87,20 +87,6 @@ class Tag(PaginationListView):
         return context
 
 
-# class Data(PaginationListView):
-#     template_name = 'bbs/data.html'
-#     name_cn = ''
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(Data, self).get_context_data(**kwargs)
-#         context['name'] = self.kwargs['name']
-#         context['name_cn'] = self.name_cn
-#         return context
-
-# class DateCountry(Data):
-#     name_cn = '国家'
-#     def get_queryset(self):
-#         return Movie.objects.filter(countries__contains=[self.kwargs['name']]).order_by('-pubdate').all()
 
 class Genres(PaginationListView):
     template_name = 'bbs/data.html'
@@ -125,6 +111,7 @@ def download(request, tid):
     except:
         raise Http404()
 
-
 def all_genres(request):
     return render(request, 'bbs/genres.html', {'genres': raw_sql_get_genres()})
+
+

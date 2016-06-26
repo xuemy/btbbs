@@ -32,7 +32,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 
-# STATIC_ROOT = os.path.join(BASE_DIR,  "static")
+STATIC_ROOT = os.path.join(BASE_DIR,  "static")
 
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, "static"),
@@ -47,3 +47,5 @@ QINIU_BUCKET_DOMAIN = '7xqsqu.com1.z0.glb.clouddn.com'
 '''
 DEBUG = True
 
+STATICSITEMAPS_ROOT_SITEMAP = 'bbs.urls.search'
+STATICSITEMAPS_USE_GZIP = False

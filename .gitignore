@@ -82,3 +82,4 @@ bbs/viewss/
 /btbbs/product.py
 /test_data.py
 /init_db.py
+/btbbs/product_wsgi.py

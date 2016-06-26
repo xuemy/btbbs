@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{% spaceless %}
+<urlset>
+    {% for d in urlset %}
+        {% with d.item as obj %}
+        <url>
+            <loc>{{ d.location }}</loc>
+            <lastmod>{{ d.lastmod|date:'Y-m-d' }}</lastmod>
+            <changefreq>always</changefreq>
+            <priority>{{ d.priority }}</priority>
+            <data>
+                <display>
+                    <name><![CDATA[{{ obj.name }}]]></name>
+                    {% for aka in obj.aka %}<alias><![CDATA[{{ aka }}]]></alias>{% endfor %}
+                    <image>{{ obj.get_image }}</image>
+                    <description><![CDATA[{{ obj.summary }}]]></description>
+                    {% for genre in obj.genres %}<genre><![CDATA[{{ genre }}]]></genre>{% endfor %}
+                    {% for cast in obj.casts %}<actor><name><![CDATA[{{ cast }}]]></name></actor>{% endfor %}
+                    {% for director in obj.directors %}<director><name><![CDATA[{{ director }}]]></name></director>{% endfor %}
+                    {% for writer in obj.writer %}<author><name><![CDATA[{{ writer }}]]></name></author>{% endfor %}
+                    <inLanguage><![CDATA[{{ obj.language|first }}]]></inLanguage>
+                    <contentLocation><![CDATA[{{ obj.countries|first }}]]></contentLocation>
+                    <premiere>
+                        <datePublished><![CDATA[{{ obj.pubdate|date:"Y-m-d" }}]]></datePublished>
+                    </premiere>
+                    <aggregateRating><ratingValue>{{ obj.rating }}</ratingValue><bestRating>10</bestRating></aggregateRating>
+                </display>
+            </data>
+        </url>
+        {% endwith %}
+    {% endfor %}
+{% endspaceless %}
+</urlset>

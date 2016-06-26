@@ -35,6 +35,13 @@ def create():
     require.users.create('xmy',password='xmy5650268')
 
 @task
+def install_nginx():
+    require.nginx.server()
+    require.nginx.proxied_site(
+        'bt2020.com'
+    )
+
+@task
 def setup():
     require.deb.packages([
         'python-dev',

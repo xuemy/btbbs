@@ -10,12 +10,12 @@
     {{ detail.summary|slice:'255'}}
 {% endblock %}
 {% block meta %}
-    <link rel="canonical" href="http://www.{{ site.domain }}{{ request.path }}" />
+    <link rel="canonical" href="http://{{ site.domain }}{{ request.path }}" />
     <meta property='og:locale' content='zh_CN'/>
     <meta property='og:type' content='article'/>
     <meta property='og:title' content='{{ detail.name }}{{ detail.get_torrent_type|join:'|' }}BT种子磁力下载 - {{ site.name }}'/>
     <meta property='og:description' content='{{ detail.summary|slice:'255' }}'/>
-    <meta property='og:url' content='http://www.{{ site.domain }}{{ request.path }}'/>
+    <meta property='og:url' content='http://{{ site.domain }}{{ request.path }}'/>
     <meta property='og:site_name' content='{{ detail.genres|join:" " }} - {{ site.name }}'/>
     <meta property='og:image' content='{{ detail.get_image }}'/>
 {% endblock %}
@@ -85,8 +85,8 @@
                             tempImg.src = img.attr('src');
                             var imgWidth = tempImg.width;
                             var imgHeight = tempImg.height;
-                            img.width(imgWidth / 2);
-                            img.height(imgHeight / 2);
+                            img.width(imgWidth / 4);
+                            img.height(imgHeight / 4);
                         };
 
 

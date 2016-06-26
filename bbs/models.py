@@ -6,6 +6,7 @@ import re
 import string
 
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.sites.shortcuts import get_current_site
 from django.db import models
 from django.db.models import permalink
 from taggit.managers import TaggableManager
@@ -32,6 +33,16 @@ detail_format = '''
 <p>◎导　　演 :J·J·艾布拉姆斯 J.J. Abrams</p>
 <p>◎主　　演 :</p>
 '''
+
+def get_torrent_type(filename):
+    regex = re.compile(r'(720p|1080p)', re.I)
+    m = regex.search(filename)
+    if m:
+        x = m.group()
+    else:
+        x = '高清'
+    return x
+
 class Movie(models.Model):
 
     douban_id = models.IntegerField(unique=True, db_index=True)
@@ -69,7 +80,7 @@ class Movie(models.Model):
 
     class Meta:
         ordering = [
-            '-pubdate', '-rating'
+            '-pubdate', '-rating', '-ctime'
         ]
 
 
@@ -97,19 +108,15 @@ class Movie(models.Model):
     def get_torrents(self):
         if self._torrents is None:
             torrents = self.torrent_set.all()
-            regex = re.compile(r'(720p|1080p)', re.I)
+            # regex = re.compile(r'(720p|1080p)', re.I)
             res = []
             torrent_type = set()
             for _torrent in torrents:
                 torrent = _torrent.torrentinfo
-                m = regex.search(torrent.name)
-                if m:
-                    x = m.group()
-                else:
-                    x = '高清'
+                x = get_torrent_type(torrent.name)
                 torrent_type.add(string.lower(x))
                 count = sum([d['size'] for d in json.loads(torrent.detail)])
-                name = '【{}】.{}/{}.{}.{}.torrent'.format(x,self.name,self.original_title,'/'.join(self.genres),humanbytes(count))
+                name = '【{}】.{}/{}.{}.{}.torrent'.format(x, self.name, self.original_title, '/'.join(self.genres),humanbytes(count))
                 res.append(
                     dict(name=name, id=torrent.id, etag =torrent.etag, info_hash=torrent.info_hash)
                 )
@@ -158,7 +165,8 @@ class Torrent(models.Model):
     f = models.FileField()
     views = models.IntegerField(default=1)
     movie = models.ForeignKey(Movie)
-
+    etag = models.CharField(max_length=40, unique=True)
+    ctime = models.DateTimeField(auto_now_add=True)
     def __unicode__(self):
         return self.torrentinfo.name
 
@@ -172,7 +180,7 @@ class TorrentInfo(models.Model):
     etag = models.CharField(max_length=40, unique=True)
     info_hash = models.CharField(max_length=40, unique=True)
     detail = models.TextField(null=True)
-
+    ctime = models.DateTimeField(auto_now_add=True)
     def __unicode__(self):
         return self.name
 
@@ -180,14 +188,13 @@ class TorrentInfo(models.Model):
     def magnet(self):
         return 'magnet:?xt=urn:btih:{}'.format(self.info_hash)
 
-class TestFile(models.Model):
-    F = models.FileField()
+    @property
+    def download_url(self):
+        #【BT天堂】【BTtiantang.com】[720p]死亡笔记.1.67GB
+        site = get_current_site()
+        filename = '[][]'
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        super(TestFile, self).save(force_insert=False, force_update=False, using=None,
-             update_fields=None)
-        print self.F.read()
+
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"
